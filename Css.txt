@@ -1,0 +1,258 @@
+CSS:- Cascading Style Sheets
+
+Using html we can create only plain webpages.
+
+We use CSS to apply styles to Html pages such as text-colors,background-colors,
+borders,alignments and many more.
+
+We can apply the styles to Html elements in 3 ways:
+
+1) Using style attribute  or inline css
+
+2) Using <style> tag in head location  or internal CSS or embedded
+
+3) Using external CSS file. or External Css
+
+
+
+1.Using style attribute  or InlIne Css
+------------------------
+To apply different styles to differents elements in single HTML document.
+
+syntax:
+
+<starttag style="property:value;property:value"> Css styles </endtag>
+
+Example:
+---------
+
+<p sytle="text-color:green;border:1px solid "> CSS styles </p>
+
+
+2) Using <style> tag in head section or Internal Css or embedded:
+=====================================================
+When we want to apply same styles to multiple Html elements  in Single Page
+or same Html Document
+
+
+syntax:
+-------
+
+<html>
+<head>
+    <style>
+    
+      selector{ 
+                 property:value;
+
+              }
+
+    </style>
+</head>
+
+
+<body>
+
+</body>
+
+</html>
+
+
+3) using external Css file  or External Css:
+============================================
+External Css file: when we want to apply same styles to all elements in 
+different pages (Html pages) . This process is called "Code centralization".
+
+CSS file:
+========
+
+Write CSS code into a file
+save with .css extesnion
+Connect css file from Html page using <link> tag in head section
+
+syntax:
+=======
+
+<link rel="stylesheet" href="location of the css file">
+
+
+
+CSS Selectors :
+===============
+
+syntax:
+-------
+
+selector:{property:value; property:value } 
+
+
+
+class(.)
+Id(#)
+Universalselector(*)
+grouping selector(, by html elements)
+attribute selector([attribueName])
+Html element selector(tagName)
+
+
+
+1)Css .class Selector:.class selector select elements with specific class
+attribute
+
+
+syntax:
+--------
+.classAttributeName{
+
+     property:value;
+  }
+
+
+ex:
+
+<p class="one"> webtechnologies </p>
+
+<p> javaScript </p>
+
+
+--------------------
+.one{
+
+  color:green;
+
+}
+
+
+
+Id(#) selector:
+==============
+
+HTML page consists number of html elements
+
+The id is used to access an element uniquely with in the page
+
+we use hash(#) character to access.
+
+syntax:
+--------
+#idAttributeName{
+
+     property:value;
+  }
+
+Ex:
+---
+<p id="i1"> webtechnologies </p>
+
+<p> javaScript </p>
+
+
+css:
+====
+#i1{
+    color:red;
+
+}
+
+
+
+Universalselector(*):
+---------------------
+
+Select all html elements on the page .
+
+
+syntax:
+-------
+
+*{
+    property:value;...;
+
+}
+
+
+
+grouping selector(comma by html elements):
+==========================================
+
+By grouping the Html elements and apply the styles.
+
+
+syntax:
+------
+
+p,h1,h3 {
+
+   property:value;
+}
+
+
+child selector(>):
+=================
+syntax : A>B
+
+example:
+--------
+
+ul>li will match all <li> elements that are nested  directly inside <ul> element
+
+
+[attribute] selector:
+===================
+this type of attribute selector is used to select all the elements that have
+specified attribute  and applies the css property to that attribute.
+
+syntax:
+-------
+
+tagName[attribute]{
+
+
+    property:value;
+ }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

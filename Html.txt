@@ -1,0 +1,482 @@
+HTML:
+=====
+
+HTML : Hyper Text Mark Up Language
+
+
+Html Is used to create plain web pages using components suchs labels, text boxes, buttons,radion buttons,
+check buttons,images, hyperlinks etc....
+
+
+By using Html we can create static webpages
+
+Statuc Html Page:  Static webpage has fixed content to all users(customers)
+
+
+static website:
+--------------
+
+Static websites contain all static pages only
+
+we create static websties using Html,Css and javascript only
+
+we cannot use any server-side programming to create static website
+
+
+examples tutorial website like
+
+www.html.com
+www.w3schools.com
+www.javatpoint.com
+
+
+
+Dynamic HtmlPage:  Dynamic wepage content different from customer to customer
+================    server-side programming generates dynamic web pages.
+
+
+webappication:
+--------------
+An application deployed in server and run from multiple cilents in network
+
+
+For example:
+
+In Gmail applications login page is static , when different users logins with their details, inbox page  appears for differently for users.
+
+
+Steps to Create First Html  Code :
+==================================
+
+1) Open text editor (notepad,wordpad)
+
+2) write html code
+
+3) save the file with .html or .htm extension
+
+4) file will be shown with browser icon in the saved location.
+
+5) Run the file by double click on that ICON.
+
+
+Ex:
+----
+<html>
+
+ <body>
+        welcome to html 
+  </body>
+
+
+</html>  --- filename.html 
+
+
+
+What are Html IDEs?
+
+IDE : Integrated Developement Environment
+
+A software by which we develop and run the html code easily
+
+Examples IDE :
+
+     Visual studio
+     sublime text
+     Notepad++
+
+
+Advantage  OF IDE: Code Intelligence --> Giving ideas to programmer to develop the code more easily
+
+For example : if we write start tag --IDE will write end tag automatically
+
+
+
+Html tags are 2 types:
+----------------------
+
+1) Non Empty tags(container tags) or paired tags
+2) Empty tags 
+
+
+Paired Tags(Non empty tags) : Contains data. it is a combination of startend and endtag
+
+syntax: 
+
+      <start>data </end>
+
+example: 
+
+         <title>data </title>
+
+
+
+Empty tags:
+-----------
+
+It contains only start tag and we must end in the same tag
+
+syntax: <start/>
+
+example:  
+
+         <br/>
+         <img src =""  />
+        <input type= "" />
+        <hr/>
+
+
+Html Attributes:
+----------------
+
+Attributes also called properties.
+
+Attributes giving extra functionality to Html elements (tags)
+
+Attributes must be placed inside a <start> tag
+
+Attribute name and value separated by equal to(=) sign
+
+Attribute values must be placed either in double quotes or singe quotes
+
+Example:
+----------
+   <start attribute=value>data /content </end>
+
+
+Note: Multiple Attributes must be separated using space character.
+
+
+
+<!DocType> tag represents which version of Html is using in the document by which broswer
+           will understand and execute the code.
+
+
+
+Example Heading Tags:
+=====================
+
+Heading tags are used to provide heading of page
+webpage recognized by the search engine using the heading tags and sub heading tags
+
+There is total 6 levels of heading tags h1,h2,h3...... h6
+
+ex:
+
+heading.html
+
+
+Paragraph Tag <p>:
+==============
+
+Html Paragraph tag  is used to define a paragraph in web page
+
+If we are using <p> tag in one html file the browser automatically adds a
+single blank line between the two paragraphs.
+
+
+ex:
+paragraphs.html
+
+
+Image tag <img/>:
+==================
+Html img tag is used to display image on the webpage
+it is an empty tag that contains attributes only
+
+'src' attribute is necessary that describes the path of the images
+
+
+Attribute <img> tag:
+--------------------
+1)alt = this attribute defines an alternate text for the image, if it can't be displayed
+
+2)width = it is an optional attribute to sepcify the width of the image
+
+3)height = it is used to specify the height of the image.
+
+
+example:
+---------
+
+images.html
+
+
+Html Comments :
+================
+
+The text placed in between <!-- text --> tags .
+Comment text will not execute by the browser. 
+Comments are used to explain a statement or block of cde.
+
+
+
+HtmL Lists:
+----------
+
+Representing List of thing . There are 3 types of list.
+
+1)Ordered List or NumberedList(ol)
+2) Unorderded List or Bulleted List (ul)
+3) Description List or Definition List(dl)
+
+
+Type Attribute in list : 
+--------------------------
+Type Attribute is used to specify the type of Number or Symbol to show
+ while printing the list.
+
+type attribute can apply to both ordered lists and unordered list
+
+unordered list type:
+====================
+type="square"
+      "disc"
+      "circle"
+
+
+ordered list type:
+-------------------
+
+type and start
+
+type ="1 or i or I or lower case letter or upper case letter " start=4
+
+ex:
+---
+
+<ol type="A"  start="4" > -- letter start with D
+
+
+
+
+
+
+example On Ordered List:
+------------------------
+
+orderedlist.html :- representing the list with numbers.
+
+represent some web technologies.
+
+
+example On unOrdered List:
+------------------------
+
+unorderedlist.html :- representing the list with discs.
+
+represent some web technologies.
+
+
+
+ Description List or Definition List(dl):
+==========================================
+representing each item in list with its description
+
+
+syntax:
+
+<dl>
+   <dt>term or word</dt>
+   <dd>description</dd>
+</dl>
+
+
+example:
+=------
+
+dllist.html
+
+
+
+Nested list :- Displaying a list inside another list.
+
+
+Example:
+-------
+
+nestedlist.html
+
+
+
+abbreviation tag:
+=================
+To  abbreviate a text , write text between  <abbr> and </abbr> tag
+
+
+example:
+========
+
+abbre.html
+
+
+Anchor Tag:
+-----------
+It is used to define a hyperlink that  links to another page or files or location
+
+The "href" attribute is used to provide the address of the link
+
+
+attribute:
+----------
+target = "_self"  by default  it will display in the same tab
+target = "_blank" it will open new tab and display 
+
+
+
+Example:
+-------
+
+anchor.hmtl
+
+
+Html Tables:
+============
+
+Tables are used to represent the record type information.
+
+we create a table using <table> tage
+
+<tr> represents table row
+<td> represents table-column data
+<th> is used to define heading
+
+Note:- 
+it is recommended to display the table with borders.
+
+Example:
+========
+employee.html :- Displaying the employee details (empid, empname,salary).
+
+
+Colspan span: to merge  columns
+
+
+row span : to merge the rows
+
+
+Html Forms:
+===========
+
+An Html form is used to collect the user input.
+Html form data 
+  either sent data to server for processing
+   or send to javascript code for validation before submit to server.
+
+
+Form elements:
+---------------
+
+Html providinf form elements to take any type of input from the user.
+The elements are:
+
+Labels
+Textboxes
+password fields
+emails field
+check boxes
+radio buton
+dropdown boxes
+submit button/reset button
+...etc
+
+
+<form>
+     form elements...
+</form>
+
+
+
+
+
+Assignment:
+-----------
+
+1)what &nbsp; ?  
+2)HTML Special Characters
+
+search for html5 belows tags 
+4)Header & Footer tags
+5)Nav, Section & Article ,Aside tags.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
