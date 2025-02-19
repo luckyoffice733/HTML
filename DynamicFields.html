@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Text Fields</title>
+</head>
+<body>
+    <button onclick="addTextField()">Add Text Field</button>
+    <div id="container"></div>
+
+    <script>
+        function addTextField() {
+            // Create a new input element
+            var pn = document.createElement("input");
+            // Set input attributes if needed
+            pn.type = "text";
+            pn.name = "passName";
+            pn.placeholder="Name";
+
+            var age = document.createElement("input");
+            // Set input attributes if needed
+            age.type = "text";
+            age.name = "passAge";    //<input type=text name=passage placeholder=age/>
+            age.placeholder="age";
+
+            // Create a new select element
+            var select = document.createElement("select");
+            
+            // Create options for the select element
+
+            var optionNone = document.createElement("option");
+            optionNone.value = "None";
+            optionNone.text = "None";
+            select.appendChild(optionNone);
+
+            var option1 = document.createElement("option");
+            option1.value = "Upper";
+            option1.text = "Upper";
+            select.appendChild(option1);
+
+            var option2 = document.createElement("option");
+            option2.value = "Lower";
+            option2.text = "Lower";
+            select.appendChild(option2);
+
+            var option3 = document.createElement("option");
+            option3.value = "Middle";
+            option3.text = "Middle";
+            select.appendChild(option3);
+           
+            
+            // Add the input to the container div
+            var container = document.getElementById("container");
+            container.appendChild(pn);
+            container.appendChild(age);
+            container.appendChild(select);
+            // Optional: Add a line break for better formatting
+            container.appendChild(document.createElement("br"));
+        }
+    </script>
+</body>
+</html>
