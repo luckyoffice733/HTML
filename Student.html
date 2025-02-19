@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+     <script>
+        function getStudentDetails(){
+       var id = document.getElementById("sid").value;
+       var name =document.getElementById("sname").value;
+       var addrs =document.getElementById("sd").value;
+
+     document.getElementById("sapp").innerHTML="hello"
+        }
+
+
+     </script>
+</head>
+<body>
+
+    <form>
+
+        <label>StudentId</label>
+        <input type="number" name="fn" id="sid"/><br/>
+    
+    
+        <label>StudentName</label>
+        <input type="text" name="ln" id="sname" ><br/>
+
+         <label>Addres</label>
+        <input type="text" name="fn" id="sd" /><br/>
+
+       <input type="button" value="save" onclick="getStudentDetails()"/>
+
+    </form>
+
+    <hr>
+    <p id="sapp"></p>
+    
+</body>
+</html>
