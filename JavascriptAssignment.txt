@@ -1,0 +1,38 @@
+
+1)Create an external js file abc.js 
+
+declare two variables  empName,empSal;
+declare variable  a=10
+
+display :
+=========
+empName   empSal
+smith      3000
+
+2)Create an html page (ex3.html) and include this(abc.js) embedded script into this page
+
+
+
+Assignment:
+=============
+Write a external javascript file(xyz.js) -> write a javascript code
+1) declare three variables a,b,c(var keyword) and read the values from the end user(prompt).
+2) compare the three variables using if-else-if (ladder) condition  and display which is greater.
+    (use logical operators/comparsion operators)
+syntax:
+---------
+if(condition1){
+   //condition1 is true 
+}else if(condition2){
+     //condition2 is true
+}else{
+      //condition1 and condition2 is false then else block will be executed.
+}
+
+
+3) create an html file (ex4.html) and include or embedded the external javascript file(xyz.js).
+
+4)search for switch-case
+5)search for the loops //enhanced for loop
+6)search for the typeOf operator  and instanceOf operator
+
