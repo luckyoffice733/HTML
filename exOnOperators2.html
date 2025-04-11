@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script>
+
+        //The equality operator in javascript is used to compare if two values are equal. 
+
+//The comparison is made by == and === operators in javascript. 
+
+/*The main difference between the == and === operator in javascript is that the == operator does the type conversion of the operands before comparison, 
+whereas the === operator compares the values as well as the data types of the operands.
+*/
+
+
+var a = 10;
+var b=20;
+var c=a + b; //here a,b are operands
+         var a=10;  //Number
+         var b='10'; //string
+         var c ="5"; //String
+         document.writeln(a==b)//true   ==>implicitly(internally) type conversion
+         document.writeln("<br>")
+         document.writeln(a===b) //false ==> strictly not type conversion
+        
+         document.writeln("<br>")
+    
+         if(a>c){
+            document.writeln("a is greater than c")
+         }else{
+            document.writeln("c is greater than a")
+         }
+
+var s1=50;
+var s2="55";
+
+var s3 = s1+s2;
+document.writeln("<br>")
+document.writeln(s3)
+
+var v1=null; //typeof(v1)
+var v2;      //typeof(v2)
+document.writeln("<br>dealing with null <br>")
+
+document.writeln(typeof(v1))
+document.writeln(typeof(v2));
+document.writeln("<br>");
+document.writeln(v1==v2);//true //impliciltuy --> undefined to null
+document.writeln("<br>");
+document.writeln(v1===v2)//false
+
+
+
+
+    
+    </script>
+</head>
+<body>
+    
+</body>
+</html>
