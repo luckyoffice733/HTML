@@ -1,0 +1,61 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+   <script type="text/javascript">
+    
+    var st ="hello";
+
+    var st2 ="world";
+
+    document.writeln("length of the string st : "+st.length);
+    document.writeln("<br>")
+    document.writeln("Concat of two string : "+st.concat(st2));
+
+    //substr - from existing string to display part of the string
+   //substr(startindex,endindex-1)  //note endindex will not included
+   //note: string index starts from 0
+    var msg="welcome to javascript";
+
+   var subst1 = msg.substring(0,7);
+   document.writeln("<br>")
+   document.writeln("substring of : "+subst1);
+   document.writeln("<br>")
+   document.writeln("substring of the given string : "+msg.substr(8,15));
+
+
+   var st3 =" hello ";
+   document.writeln("<br>")
+   document.writeln("string st3 value is :"+st3);
+   
+   document.writeln("<br>")
+   document.writeln("string st3 value is :"+st3.trim());
+
+   var st4="welcome"; //
+   //charAt(index position);
+
+   var ch = st4.charAt(2);//l
+   document.writeln("<br>")
+   document.writeln("character at the index position at 2 is : "+ch);
+
+   document.writeln("<br>")  //toUpperCase())/ toLowerCase();
+   document.writeln("convert the string into uppercase : "+st4.toUpperCase());
+
+
+
+
+
+
+
+   </script>
+
+</head>
+<body>
+    
+</body>
+</html>
+
