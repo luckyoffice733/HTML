@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arrays Example</title>
+
+    <script type="text/javascript">
+       //array declaration and initliaization
+        //we can declare an array '[]'
+        //array index starts from zero
+          //  0       1         2      3
+    var a1=["apple","mango","grapes","orange"];
+
+    document.writeln("no of elements in array :"+a1.length); //no of elements in an array a1
+   document.writeln("<br>")
+   document.writeln(a1[3]) // orange
+   document.writeln("<br>")
+   document.writeln(a1) // apple,mango,grapes,orange
+   document.writeln("<br>")
+   document.writeln("accessing the array elements using for loop")
+
+   for(var i=0;i<a1.length;i++){
+    document.writeln("<br>"+a1[i])   //
+   }
+  
+   //creating an Array using Array Object using constructor
+    var arr = new Array(3);
+     arr[0]="rose";
+     arr[1]="lilly";
+     arr[2]="lotus";
+
+     document.writeln("accessing the array elements");
+     document.writeln("<br>"+arr) 
+    //accessing the elements using for loop
+
+    arr[3]="jasmine";
+    arr[4]=true;
+   
+    document.writeln("<br>accessing the array elements");
+    document.writeln("<br>"+arr) 
+
+</script>
+
+
+
+</head>
+<body>
+    
+</body>
+</html>
