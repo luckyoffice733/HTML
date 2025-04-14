@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+   <script type="text/javascript">
+
+      var name="mahesh";
+
+      try{
+       if(name.length<=10){
+        throw 'Incorrect'; //exception is raised
+       }   
+       document.writeln("Name of the emp: "+name);
+
+      }catch(Incorrect){
+        document.writeln("Length of the string should be 10 characters")
+      }finally{
+        document.writeln("<br>finally block will be executed regard less try/catch")
+      }
+
+
+   </script>
+
+
+
+
+
+
+</head>
+<body>
+    
+</body>
+</html>
+
+
