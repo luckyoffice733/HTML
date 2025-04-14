@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    
+<script type="text/javascript">
+    
+    var st ="hello"; //global variable
+    var st2 ="world"; //global variable
+
+    function display(){
+        var st3 ="welcome"; //local variable
+       document.writeln(st);
+       st2="hi"; //resignment an variable
+       document.writeln(st2);
+       document.writeln(st3);
+    }
+   try{
+    document.writeln(st3);//
+   }catch(err){
+    document.writeln("errorMessage: "+err.message)
+   }
+    //accessing or calling function
+    display()
+   
+   
+
+</script>
+</head>
+
+<body>
+    
+</body>
+</html>
