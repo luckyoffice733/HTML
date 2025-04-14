@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <script type="text/javascript">
+   
+    function validAge(){
+    try{
+      var age = document.getElementById("age").value;
+    
+     if(age <18){
+        throw "InvalidAgeException";
+     }else{
+        document.getElementById("demo").innerHTML="Age is valid to caste an a vote";
+        // document.writeln("Age is valid to caste an a vote");
+     }
+    }catch(InvalidAgeException){
+       // document.writeln("Age is invalid");
+       document.getElementById("demo").innerHTML="Age Invalid";
+    }
+    }
+
+
+    </script>
+
+
+
+</head>
+
+<body>
+
+
+
+<label>Please Enter The Age</label><br>
+<input type="text" name="age" id="age">
+<input type="button" value="validAge" onclick="validAge()">
+    <hr>
+    <p id="demo"></p>
+</body>
+</html>
