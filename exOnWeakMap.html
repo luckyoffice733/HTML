@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <script type="text/javascript">
+
+     var wmp = new WeakMap();
+   
+     var obj ={"a":1}
+     var obj1 ={}
+     var obj2={"d":4}
+
+     wmp.set(obj,"hello");
+     wmp.set({"b":2},50);
+     wmp.set(obj1,true);
+     wmp.set(obj2,"world")
+
+
+     document.writeln("<br> the value from the wmp: "+wmp.get(obj1))
+     
+    
+
+
+    </script>
+
+
+</head>
+<body>
+    
+</body>
+</html>
