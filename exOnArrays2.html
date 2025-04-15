@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arrays Example2</title>
+
+    <script type="text/javascript">
+            //array index starts from zero
+            // 0 1 2  3  4  5
+     var arr =[5,8,10,23,25,30];
+
+     document.writeln("no of elements in arr: "+arr.length)//6
+     document.writeln("<br>"+ arr[4]); //25
+
+     document.writeln("<br>")
+     //map() -> to perform expression on the each element in the array.
+
+     var newArrMap = arr.map(e  => e+10);
+      
+     document.writeln("<br> map() output")
+     document.writeln(newArrMap)  //15,18,20,33,35,40
+
+     //filter() --> 
+
+       var evenNumbers = arr.filter( e => e % 2 == 0);
+       document.writeln("<br> filter() output :")
+     document.writeln(evenNumbers)
+ 
+      var arr2=[40,4,1,25,30];
+      document.writeln("<br> sort() output :")
+      arr2.sort((a,b) => a-b);
+      document.writeln(arr2)
+     
+      document.writeln("<br> Elements from the arr2 using forloop <br>")
+      for(var i=0;i<arr2.length;i++){
+          document.writeln(arr2[i]+"<br>");
+      }
+    //using forEach
+    document.writeln("<br> Elements from the arr2 using forEach <br>")
+    arr2.forEach(e => document.writeln(e+"<br>"))
+       arr2.forEach(e => console.log(e))
+
+   var arr3 =new Array();  //declaring an array using constructor
+      //add the elements into an array push()
+
+      arr3.push("apple");
+      arr3.push(true);
+      arr3.push(10);
+      document.writeln("<br> no of elements : "+arr3.length)
+      document.writeln("<br> Elements from the arr3: "+arr3)
+      document.writeln("<br> Elements from the arr3 using forEach <br>")
+      arr3.forEach(e => document.writeln(e+"<br>"))
+
+  var arr4=[4,"mango","smith",40,true,10]
+  //pop  -> to delete or remove an last element from the array
+  document.writeln("<br> Elements from the arr4 using forEach <br>")
+  arr4.forEach(e => document.writeln(e+"<br>"))
+
+  arr4.pop();
+ 
+  document.writeln("<br> Elements from the arr4 using forEach <br>")
+  arr4.forEach(e => document.writeln(e+"<br>"))
+
+   var arr5 = arr4.splice(0,3);
+   document.writeln("<br> Elements from the splice array <br>")
+   arr5.forEach(e => document.writeln(e+"<br>"))
+
+   document.writeln("<br> Elements from the array <br>")
+   document.writeln(arr4);//4,"mango","smith",40,true,10
+   
+   document.writeln("<br> Elements from the array <br>")
+   document.writeln(arr4.join("|"));
+
+
+
+
+
+
+
+    
+
+
+
+
+
+   </script>
+</head>
+
+<body></body>
+
+</html>
