@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ArrowFuntions</title>
+<script>
+
+function display(){
+  console.log("hello world");
+}
+
+//accessing
+display();
+//converting into arrow function
+var obj = ()=>{console.log('hello world')} 
+
+//accessing
+
+obj();
+
+//arrow function
+var add=(a,b)=>{ 
+                  var c=a+b;
+                  document.writeln("sum of two numbers"+c);
+           }
+
+//calling
+
+add(2,5);
+
+//convert into arrow function:
+
+var additionOFTwoNumber = (a,b) => { return a+b;}
+
+//accessing;
+
+var res= additionOFTwoNumber(10,20);
+document.writeln("<br> sum of two numbers: "+res);
+
+
+
+
+
+
+</script>
+
+
+
+</head>
+<body>
+    
+</body>
+</html>
