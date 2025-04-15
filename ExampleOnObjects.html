@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Object</title>
+
+    
+<script>
+//chair
+var chair={
+    "color":"black",
+     "noOfWheels":4,
+     "seatHeightAdjustable":function(){
+       document.writeln("chair height adjustable")
+     }
+
+}
+//calling the object properties and actions
+
+document.writeln("<br>")
+
+document.writeln("Chair object :"+chair)
+document.writeln("<br>")
+document.writeln(chair.color+" "+chair.noOfWheels)
+document.writeln("<br>")
+chair.seatHeightAdjustable();
+
+
+//using new keyword
+
+var obj = new Object();
+
+//initilaizating an object
+obj.a=10;
+obj.empName="smith";
+
+document.writeln("<br>")
+document.writeln(obj.a+" "+obj.empName);
+
+
+
+
+</script>
+
+</head>
+<body>
+    
+</body>
+</html>
