@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>map object</title>
+
+
+<script type="text/javascript">
+//delcaring an map on object using new keyword
+
+var mp = new Map();
+
+document.writeln("no of object in map : "+mp.size)
+//adding an elements  into map
+//set(key,value)  
+mp.set("a",10);
+mp.set("b",30);
+mp.set("b",40); //duplicated
+mp.set("d","50");
+
+document.writeln("<br> no of object in map : "+mp.size)
+
+document.writeln("<br> element based on key "+ mp.get("a")) //10
+
+document.writeln("<br> element  based on key "+ mp.get("e"))//undefined
+
+document.writeln("<br> element search based on key "+ mp.has("e"))//false
+mp.delete("a");
+document.writeln("<br> after delete an object based on key :"+mp.size)
+
+
+
+var  mp2 = new Map();
+
+mp2.set(1021,"john");
+mp2.set(1212,"smith");
+mp2.set(1933,"martin");
+mp2.set(3121,"allen");
+
+document.writeln("<br> only keys ");
+for(var key of mp2.keys()){
+    document.writeln("<br>"+key);
+}
+
+document.writeln("<br> only values ");
+for(var v of mp2.values()){
+    document.writeln("<br>"+v);
+}
+
+
+document.writeln("<br>key values  ");
+for(var entry of mp2.entries()){ //entry = (key,value)
+    document.writeln("<br>"+entry);
+}
+
+
+</script>
+
+
+
+
+</head>
+<body>
+    
+</body>
+</html>
