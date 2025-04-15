@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>map object</title>
+
+
+<script type="text/javascript">
+
+   
+    var  car = {   //object properties
+        color:"red",
+        material:"metal",
+        wheels:"alloywhees",
+
+        drive:function(){
+            console.log("4X4 or 4wd")
+        },
+
+        acceleration:function(){
+            console.log("maximun speed 240 ")
+        }
+       ,
+        carDetails:function(){
+            console.log(this.color+" "+this.material+" "+this.wheels)
+        }
+
+    }
+
+    car.acceleration()
+    car.drive();
+    car.carDetails();
+
+
+
+
+</script>
+
+</head>
+<body>
+
+</body>
+</html>
