@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+<script type="text/javascript">
+
+   function greet(){
+       document.writeln("helloworld")
+   }
+
+  setTimeout(greet,3000)//greet is callback function
+
+  // program to display time every 3 seconds
+function showTime() {
+
+// return new date and time
+let dateTime= new Date();
+
+// returns the current local time
+let time = dateTime.toLocaleTimeString();
+
+console.log(time)
+
+// display the time after 3 seconds
+ setTimeout(showTime, 3000);
+}
+
+// calling the function
+showTime();
+
+
+
+
+
+
+</script>
+
+
+
+</head>
+<body>
+    
+</body>
+</html>
