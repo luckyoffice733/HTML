@@ -1,0 +1,87 @@
+package com.training.demospringcoreusingspringboot;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+import com.training.demospringcoreusingspringboot.model.Product;
+
+@SpringBootApplication
+public class DemospringcoreusingspringbootApplication implements CommandLineRunner{
+
+	@Autowired //initilaze the object
+   private Product product;
+
+	public static void main(String[] args) {
+		SpringApplication.run(DemospringcoreusingspringbootApplication.class, args);
+	}
+
+	@Override
+	public void run(String... args) throws Exception {
+   System.out.println(product.getProductId()+" "+product.getProductName()+" "+product.getPrice());
+
+	}
+
+}
+
+properties file:
+=================
+spring.application.name=demospringcoreusingspringboot
+
+id=1001
+name=laptop
+price=4000
+
+
+model:
+=======
+package com.training.demospringcoreusingspringboot.model;
+
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+@Component  //it will act has a bean class
+public class Product {
+  
+    @Value("${id}")  //it will act as property-> setter injection
+    private int productId;
+
+    @Value("${name}")
+    private String productName;
+
+    @Value("${price}")
+    private double price;
+
+
+    public Product() {
+    }
+    public Product(int productId, String productName, double price) {
+        this.productId = productId;
+        this.productName = productName;
+        this.price = price;
+    }
+    public int getProductId() {
+        return productId;
+    }
+    public void setProductId(int productId) {
+        this.productId = productId;
+    }
+    public String getProductName() {
+        return productName;
+    }
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
+    public double getPrice() {
+        return price;
+    }
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
+    
+
+
+}
