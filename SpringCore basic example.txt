@@ -150,3 +150,121 @@ public class App
      System.out.println(mobj.getMsg());
     }
 }
+
+
+
+============
+javaConfiguration
+-----------------
+package com.training.model;
+
+public class Employee {
+
+   private int empId;
+   private String empName;
+   private  int empSal;
+   public Employee() {
+   }
+   public Employee(int empId, String empName, int empSal) {
+    this.empId = empId;
+    this.empName = empName;
+    this.empSal = empSal;
+   }
+   public int getEmpId() {
+    return empId;
+   }
+   public void setEmpId(int empId) {
+    this.empId = empId;
+   }
+   public String getEmpName() {
+    return empName;
+   }
+   public void setEmpName(String empName) {
+    this.empName = empName;
+   }
+   public int getEmpSal() {
+    return empSal;
+   }
+   public void setEmpSal(int empSal) {
+    this.empSal = empSal;
+   }
+
+   
+
+
+}
+
+
+
+Configuration:
+==============
+package com.training.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+import com.training.model.Employee;
+
+@Configuration
+public class SpringConfig {
+
+  
+    @Bean
+    public Employee getEmployeeObject(){
+      Employee emp= new Employee();
+      emp.setEmpId(101);
+      emp.setEmpName("rakesh");
+      emp.setEmpSal(400);
+     return emp;
+
+    }
+
+
+}
+
+
+App class:
+===========
+package com.training;
+
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+import com.training.config.SpringConfig;
+import com.training.model.Employee;
+import com.training.model.Message;
+import com.training.model.Product;
+
+public class App 
+{
+    public static void main( String[] args )
+    {
+    //loading congfiguration file into spring ioc container named Application Context
+   ApplicationContext  context = new ClassPathXmlApplicationContext("applicationContext.xml");
+        
+   //getting the bean object which is created by  Container based on the Id we use method called getBean()
+
+    Message mobj=      context.getBean("message",Message.class);
+
+     System.out.println(mobj.getMsg());
+
+
+    Product pobj= context.getBean("product",Product.class);
+              System.out.println("Product Details are :");
+              System.out.println(pobj.getProductId());
+              System.out.println(pobj.getProductName());
+              System.out.println(pobj.getPrice());
+
+
+
+     //loading the java configuartion file SpringConfig.java into application context
+     System.out.println("using java configuration");
+      ApplicationContext context2 = new AnnotationConfigApplicationContext(SpringConfig.class);
+     Employee eobj= context2.getBean("getEmployeeObject",Employee.class);
+     System.out.println(eobj.getEmpId());
+     System.out.println(eobj.getEmpName());
+     System.out.println(eobj.getEmpSal());
+
+    }
+}
