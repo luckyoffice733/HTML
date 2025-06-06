@@ -1,0 +1,414 @@
+Collection Injection And AutoWiring using Xml Configuration:
+============================================================
+package com.example.springapp.model;
+
+import java.util.List;
+
+public class Fruits {
+
+  List<String> fruits;
+
+  public Fruits() {
+  }
+
+  public List<String> getFruits() {
+    return fruits;
+}
+
+  public void setFruits(List<String> fruits) {
+    this.fruits = fruits;
+  }
+
+  public Fruits(List<String> fruits) {
+    this.fruits = fruits;
+  }
+
+ 
+}
+
+Employee:
+========
+package com.example.springapp.model;
+
+import org.springframework.beans.factory.annotation.Value;
+
+
+public class Employee {
+   
+    private int empId;
+    
+    private String empName;
+
+    private  int empSal;
+
+    private Address address;    
+  
+    public Employee(Address address) {
+        this.address = address;
+    }
+    public Employee(int empId, String empName, int empSal, Address address) {
+       this.empId = empId;
+        this.empName = empName;
+        this.empSal = empSal;
+        this.address = address;
+    }
+    public Employee() {
+    
+     }
+    public int getEmpId() {
+        return empId;
+    }
+    public void setEmpId(int empId) {
+        this.empId = empId;
+    }
+    public String getEmpName() {
+        return empName;
+    }
+    public void setEmpName(String empName) {
+        this.empName = empName;
+    }
+    public int getEmpSal() {
+        return empSal;
+    }
+    public void setEmpSal(int empSal) {
+        this.empSal = empSal;
+    }
+    public Address getAddress() {
+        return address;
+    }
+    public void setAddress(Address address) {
+        this.address = address;
+    }
+}
+
+AddressClass:
+============-
+package com.example.springapp.model;
+
+import org.springframework.beans.factory.annotation.Value;
+
+public class Address {
+   
+   String cityName;
+   String pinCode;
+   public Address() {
+   }
+   public Address(String cityName, String pinCode) {
+    this.cityName = cityName;
+    this.pinCode = pinCode;
+   }
+   public String getCityName() {
+    return cityName;
+   }
+   public void setCityName(String cityName) {
+    this.cityName = cityName;
+   }
+   public String getPinCode() {
+    return pinCode;
+   }
+   public void setPinCode(String pinCode) {
+    this.pinCode = pinCode;
+   }
+}
+
+
+
+applicationContext.xml:
+=======================
+
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    
+
+<bean id="fruit" class="com.example.springapp.model.Fruits">
+<property name="fruits">
+<list>
+<value>bananan</value>
+<value>mango</value>
+<value>apple</value>
+</list>
+</property>
+</bean>
+
+
+<bean id="addr"  class="com.example.springapp.model.Address">
+<property name="cityName" value="BBI"></property>
+<property name="pinCode" value="751024"></property>
+</bean>
+                                                                         
+<bean id="employee" class="com.example.springapp.model.Employee" autowire="constructor">
+<property name="empId" value="1212"></property>
+<property name="empName" value="BobALice"></property>
+<property name="empSal" value="5000"></property>
+</bean> 
+
+</beans>
+
+Note:
+========
+instead of ref tag Ex: <property name="address" ref="address"></property>
+we are injecting dependency(Address) object into Employee class implicitly by using autowire concept -> autowire -> no/byName/byType/constructor.
+
+
+SpringStarterClass:
+===================
+package com.example.springapp;
+
+import java.util.List;
+
+
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+import com.example.springapp.model.Address;
+import com.example.springapp.model.Employee;
+import com.example.springapp.model.Fruits;
+
+@SpringBootApplication
+public class SpringappApplication implements CommandLineRunner{
+
+
+	public static void main(String[] args) {
+		SpringApplication.run(SpringappApplication.class, args);
+	}
+
+	@Override
+	public void run(String... args) throws Exception {
+	 
+	ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
+
+	Fruits fobj=context.getBean("fruit",Fruits.class); 
+
+     List<String> fts= fobj.getFruits();
+	 for(String ft:fts){
+          System.out.println(ft);
+	 }
+
+      
+	//  Employee eobj=context.getBean("employee",Employee.class);
+
+    System.out.println(eobj.getEmpId()+" "+eobj.getEmpName()+" "+eobj.getEmpSal());
+    Address aobj=   eobj.getAddress();
+    System.out.println(aobj.getCityName()+" "+aobj.getPinCode());
+
+     System.out.println(employee.getEmpId()+" "+employee.getEmpName()+" "+employee.getEmpSal());
+     System.out.println(employee.getAddress().getCityName()+" "+employee.getAddress().getPinCode());
+	}
+
+}
+
+
+converting above code xml Configuration into SpringBoot Code:
+=============================================================
+
+Spring Boot Code:
+===================
+applicationContext.xml:  
+========================
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+   
+<bean id="fruit" class="com.example.springapp.model.Fruits">
+<property name="fruits">
+<list>
+<value>bananan</value>
+<value>mango</value>
+<value>apple</value>
+</list>
+</property>
+</bean>
+
+
+<!--
+<bean id="addr"  class="com.example.springapp.model.Address">
+<property name="cityName" value="BBI"></property>
+<property name="pinCode" value="751024"></property>
+</bean>
+                                                                         
+<bean id="employee" class="com.example.springapp.model.Employee" autowire="constructor">
+<property name="empId" value="1212"></property>
+<property name="empName" value="BobALice"></property>
+<property name="empSal" value="5000"></property>
+</bean> 
+
+-->
+
+</beans>
+
+Note:
+======
+Commented the autowire code  we need to inject the dependent object using @Autowired annotation
+
+Initilaize sample data using key=value in properties file:
+===========================================================
+application.properties:
+=========================
+
+#key=value
+city=BBI
+pn=12345
+eid=301
+en=smith
+esal=4000
+
+
+
+Rewrite the Employee and Department class like below:using @Component and @Autowired
+======================================================================================
+
+package com.example.springapp.model;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+@Component
+public class Address {
+    @Value("${city}")
+   String cityName;
+
+   @Value("${pn}")
+   String pinCode;
+   public Address() {
+   }
+   public Address(String cityName, String pinCode) {
+    this.cityName = cityName;
+    this.pinCode = pinCode;
+   }
+   public String getCityName() {
+    return cityName;
+   }
+   public void setCityName(String cityName) {
+    this.cityName = cityName;
+   }
+   public String getPinCode() {
+    return pinCode;
+   }
+   public void setPinCode(String pinCode) {
+    this.pinCode = pinCode;
+   }
+
+   
+
+}
+
+
+package com.example.springapp.model;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+@Component
+public class Employee {
+   
+     @Value("${eid}")
+    private int empId;
+    @Value("${en}")
+    private String empName;
+    @Value("${esal}")
+    private  int empSal;
+
+    //@Autowired
+    private Address address;//has-a relation //implicitly autowire by type or /byName
+    
+    
+    @Autowired  //implicity it perform the autowire using constructor
+    public Employee(Address address) {
+        this.address = address;
+    }
+    // public Employee(int empId, String empName, int empSal, Address address) {
+    //     this.empId = empId;
+    //     this.empName = empName;
+    //     this.empSal = empSal;
+    //     this.address = address;
+    // }
+    // public Employee() {
+    // }
+    public int getEmpId() {
+        return empId;
+    }
+    public void setEmpId(int empId) {
+        this.empId = empId;
+    }
+    public String getEmpName() {
+        return empName;
+    }
+    public void setEmpName(String empName) {
+        this.empName = empName;
+    }
+    public int getEmpSal() {
+        return empSal;
+    }
+    public void setEmpSal(int empSal) {
+        this.empSal = empSal;
+    }
+    public Address getAddress() {
+        return address;
+    }
+
+    @Autowired //autowire by name
+    public void setAddress(Address address) {
+        this.address = address;
+    }
+
+}
+
+SpringBoot Starter Class:
+==========================
+package com.example.springapp;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+import com.example.springapp.model.Address;
+import com.example.springapp.model.Employee;
+import com.example.springapp.model.Fruits;
+
+@SpringBootApplication
+public class SpringappApplication implements CommandLineRunner{
+
+	@Autowired
+    private Employee employee;
+
+	public static void main(String[] args) {
+		SpringApplication.run(SpringappApplication.class, args);
+	}
+
+	@Override
+	public void run(String... args) throws Exception {
+	 
+	ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
+
+	Fruits fobj=context.getBean("fruit",Fruits.class); 
+
+     List<String> fts= fobj.getFruits();
+	 for(String ft:fts){
+          System.out.println(ft);
+	 }
+
+	//  Employee eobj=context.getBean("employee",Employee.class);
+
+    //  System.out.println(eobj.getEmpId()+" "+eobj.getEmpName()+" "+eobj.getEmpSal());
+    //  Address aobj=   eobj.getAddress();
+    // System.out.println(aobj.getCityName()+" "+aobj.getPinCode());
+
+     System.out.println(employee.getEmpId()+" "+employee.getEmpName()+" "+employee.getEmpSal());
+     System.out.println(employee.getAddress().getCityName()+" "+employee.getAddress().getPinCode());
+	}
+
+}
