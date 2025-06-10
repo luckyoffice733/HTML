@@ -1,0 +1,139 @@
+
+@Entity
+class Product{
+  @Id
+  @GeneratedValue(strategy=GenerationType.IDENTITY)
+  private int productid;
+  private String productName;
+  private  double price;
+
+}
+
+Ex:
+===
+1121  mouse 500
+3121  laptop 50000
+1212  pendrive 800
+
+
+
+public interface ProductRepository extends JpaRepository<Product,Integer>{
+}
+
+
+
+findById(1121);  -->JpaRepository
+
+
+JPQL:
+==========
+write a query to get the data /fetch data based on productName;
+
+
+public interface ProductRepository extends JpaRepository<Product,Integer>{
+
+    @Query("select p from Product p where p.productName=?1")   ////?1,?2.... is positional parameter
+    public List<Product> getProductsByName(String productName);
+
+    //Named Parameter :- Syntax -  :paramerName
+    
+    @Query("select p from Product p where p.productName=:pn") 
+    public List<Product> getProductsByName(@Param("pn") String productName);
+
+
+    //write a query to fetch the record based on name and price using two ways
+      
+   @Query("select p from Product p where p.productnName=?1 and p.price=?2)
+   public List<Product> getProductsByNameAndPrice(String name,int price);
+
+   or
+
+   @Query("select p from Product p where p.productnName=:pn and p.price=:pr)
+   public List<Product> getProductsByNameAndPrice(@Param("pn") String name,@Param("pr") int price);
+
+   /Write a query to fetch/get the databased based on productName using like or pattern :- % or _
+   
+    @Query("select  p from Product p where p.productName like %?1%")
+    public List<Product> getProductsLikeProductName(String pname);
+
+//Named
+    @Query("select  p from Product p where p.productName like %:patterName%")
+    public List<Product> getProductsLikeProductName(@Param("patterName ") String pname);
+   
+  }
+
+
+
+Empno(pk) ename sal job deptno(fK)   --> Employee  ->(Child)
+
+
+deptno(pk) dname loc      --->Deparment-> ParentTable
+
+create table employee(empno int primary key,
+    -> ename varchar(20),
+    -> sal decimal(10,2),
+    -> job varchar(15),
+    -> deptno int referenes department(deptno));
+
+ create table employee(empno int primary key,
+    -> ename varchar(20),
+    -> sal decimal(10,2),
+    -> job varchar(15),
+    -> deptno int references department(deptno));
+Query OK, 0 rows affected (0.02 sec)
+
+
+
+
+Course : - courseid courseName Fees      -->Parent
+Student :- sid sname address  courseid   -->Child
+
+create  tables with primary key and foreign key  relation at Alter level.
+
+Ex:
+=====
+create table course(cid int,cname varchar(20),fee float);
+Query OK, 0 rows affected (0.03 sec)
+
+alter table course add constraint primay key(cid);
+
+ create table student (sid int primary key,sname varchar(20),address varchar(20),cid int);
+alter table student add foreign key(cid) references course(cid);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
