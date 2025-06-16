@@ -73,6 +73,9 @@ public class UserService implements UserDetailsService {
 }
 
 
+
+
+
 ===========================================
 package com.examly.springapp.configuration;
 
@@ -299,10 +302,11 @@ public class SecurityConfig {
             // Configure endpoint security
             .authorizeHttpRequests(auth -> auth
                 // Allow unauthenticated access to registration and login endpoints
-                .requestMatchers("/api/register", "/api/login").permitAll()
+                .requestMatchers("/auth/register", "/auth/login","/api/welcome").permitAll()
 
                 // Only allow users with role ADMIN to access admin endpoints
-                .requestMatchers("/admin/**").hasRole("ADMIN")
+                .requestMatchers("/api/admin").hasRole("ADMIN")
+ 		.requestMatchers("/api/user").hasRole("USER")
 
                 // All other endpoints require authentication
                 .anyRequest().authenticated()
@@ -376,7 +380,7 @@ public class UserController {
         try {
             msg="User endpoint accessed";
             return new ResponseEntity<>(msg, HttpStatus.OK);
-        } catch (Exception e) {  //  + "\"" + "string" + "\"" +
+        } catch (Exception e) {
             msg="This endpoint is accessible only by users with the \"USER\" role.";
             return ResponseEntity.status(403).body(msg);
         }
