@@ -1,0 +1,546 @@
+package com.examly.springapp.model;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+
+@Entity
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+public class User {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+   private int id;
+    @Column(unique = true)
+   private String username;
+   private String password;
+   private String role;
+
+
+}
+=================
+package com.examly.springapp.repository;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import com.examly.springapp.model.User;
+
+@Repository
+public interface UserRepo  extends JpaRepository<User,Integer> {
+
+   User findByUsername(String username);
+
+
+}
+=======================================================
+
+package com.examly.springapp.service;
+
+import com.examly.springapp.configuration.*;
+import com.examly.springapp.model.User;
+import com.examly.springapp.repository.UserRepo;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
+@Service
+public class UserService implements UserDetailsService {
+
+    @Autowired
+    private UserRepo userRepo;
+
+    public User registerUser(User user) {
+        return userRepo.save(user);
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) {
+        User user = userRepo.findByUsername(username);
+        if (user == null)
+            throw new UsernameNotFoundException("User Not Found");
+        return new UserPrinciple(user);
+    }
+}
+
+
+
+
+
+===========================================
+package com.examly.springapp.configuration;
+
+import com.examly.springapp.model.User;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import java.util.Collection;
+import java.util.Collections;
+
+public class UserPrinciple implements UserDetails {
+
+    private final User user;
+
+    public UserPrinciple(User user) {
+        this.user = user;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + user.getRole()));
+    }
+
+    @Override
+    public String getPassword() {
+        return user.getPassword();
+    }
+
+    @Override
+    public String getUsername() {
+        return user.getUsername();
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+
+   
+}
+
+===================================================
+package com.examly.springapp.configuration;
+
+import io.jsonwebtoken.*;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Component;
+import java.util.*;
+import java.util.function.Function;
+
+@Component
+public class JwtUtils {
+    private static final String SECRET_KEY = "Java";
+
+    public String extractUsername(String token) {
+        return extractClaim(token, Claims::getSubject);
+    }
+
+    public Date extractExpiration(String token) {
+        return extractClaim(token, Claims::getExpiration);
+    }
+
+    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
+        return claimsResolver.apply(extractAllClaims(token));
+    }
+
+    public Claims extractAllClaims(String token) {
+        return Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody();
+    }
+
+    public Boolean isTokenExpired(String token) {
+        return extractExpiration(token).before(new Date());
+    }
+
+    public String generateToken(UserDetails userDetails) {
+        Map<String, Object> claims = new HashMap<>();
+        return createToken(claims, userDetails.getUsername());
+    }
+
+    public String createToken(Map<String, Object> claims, String subject) {
+        return Jwts.builder()
+            .setClaims(claims)
+            .setSubject(subject)
+            .setIssuedAt(new Date(System.currentTimeMillis()))
+            .setExpiration(new Date(System.currentTimeMillis()+1000*60*60))
+            .signWith(SignatureAlgorithm.HS256, SECRET_KEY).compact();
+    }
+
+    public Boolean validateToken(String token, UserDetails userDetails) {
+        return extractUsername(token).equals(userDetails.getUsername()) && !isTokenExpired(token);
+    }
+}
+
+=======================================================
+
+package com.examly.springapp.configuration;
+
+import java.io.IOException;
+
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.stereotype.Component;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
+@Component
+public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
+
+    @Override
+    public void commence(HttpServletRequest request, HttpServletResponse response,
+            AuthenticationException authException) throws IOException, ServletException {
+
+        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
+
+    }
+
+}
+
+
+
+
+
+package com.examly.springapp.configuration;
+
+
+import jakarta.servlet.*;
+import jakarta.servlet.http.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.*;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.stereotype.Component;
+import org.springframework.web.filter.OncePerRequestFilter;
+import com.examly.springapp.service.UserService;
+
+import java.io.IOException;
+
+@Component
+public class JwtAuthenticationFilter extends OncePerRequestFilter {
+
+    @Autowired 
+    private JwtUtils jwtUtils;
+    @Autowired 
+    private UserService userService;
+
+    @Override
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
+                                    FilterChain filterChain) throws ServletException, IOException {
+
+        final String authHeader = request.getHeader("Authorization");
+
+        String username = null;
+        String jwt = null;
+
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            jwt = authHeader.substring(7);
+            username = jwtUtils.extractUsername(jwt);
+        }
+
+        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            UserDetails userDetails = userService.loadUserByUsername(username);
+
+            if (jwtUtils.validateToken(jwt, userDetails)) {
+                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                    userDetails, null, userDetails.getAuthorities());
+
+                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                SecurityContextHolder.getContext().setAuthentication(authToken);
+            }
+        }
+
+        filterChain.doFilter(request, response);
+    }
+}
+
+=========================================
+
+SecurityConfig:
+
+package com.examly.springapp.configuration;
+import com.examly.springapp.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.*;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.*;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.*;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.*;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+@Configuration
+@EnableWebSecurity
+public class SecurityConfig {
+
+    @Autowired
+    private JwtAuthenticationFilter jwtFilter;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+
+        return http.csrf(csrf -> csrf.disable())
+
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/auth/register", "/auth/login","api/gift/welcome").permitAll()
+                        .requestMatchers("/api/gift").hasRole("ADMIN")
+                        .requestMatchers("/api/gift/**").hasAnyRole("ADMIN", "CUSTOMER")
+                        .anyRequest().authenticated())
+
+                .exceptionHandling(ex -> ex.authenticationEntryPoint(jwtAuthenticationEntryPoint))
+
+                .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .userDetailsService(userService)
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+                .build();
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+        return config.getAuthenticationManager();
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+}
+
+
+
+=============================================================================================================================================
+AuthController:
+
+
+package com.examly.springapp.controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import com.examly.springapp.model.*;
+import com.examly.springapp.configuration.JwtUtils;
+import com.examly.springapp.service.UserService;
+
+@RestController
+@RequestMapping("/auth")
+public class AuthController {
+
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private AuthenticationManager authenticationManager;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+    @Autowired
+    private JwtUtils jwtUtils;
+
+    @PostMapping("/register")
+    public ResponseEntity<Boolean> register(@RequestBody User user) {
+        try {
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+            userService.registerUser(user);
+            return new ResponseEntity<>(true, HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(false, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<String> login(@RequestBody User user) {
+        try {
+            authenticationManager
+                    .authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
+            final UserDetails userDetails = userService.loadUserByUsername(user.getUsername());
+            final String jwt = jwtUtils.generateToken(userDetails);
+            return new ResponseEntity<>(jwt, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Login Failed",HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+}
+
+==========================================================================================================================================
+GiftController:
+
+package com.examly.springapp.controller;
+import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.examly.springapp.model.Gift;
+import com.examly.springapp.repository.GiftRepo;
+import com.examly.springapp.service.GiftService;
+
+@RestController
+public class GiftController {
+
+    @Autowired
+    private GiftService giftService;
+
+    @GetMapping("/api/gift/welcome")
+    public ResponseEntity<String> welcome() {
+        return new ResponseEntity<>("Welcome to gift application", HttpStatus.OK);
+    }
+
+    @PostMapping("/api/gift")
+    public ResponseEntity<Gift> addGift(@RequestBody Gift gift) {
+        try {
+            gift = giftService.addGift(gift);
+            return new ResponseEntity<>(gift, HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+    }
+
+    @GetMapping("/api/gift")
+    public ResponseEntity<List<Gift>> getAllGifts() {
+        try {
+            List<Gift> gifts = giftService.findAllGifts();
+            return new ResponseEntity<>(gifts, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+    }
+
+    @GetMapping("/api/gift/{giftId}")
+    public ResponseEntity<Gift> getGift(@PathVariable int giftId) {
+        try {
+            Gift gift = giftService.findGiftById(giftId);
+            return new ResponseEntity<>(gift, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+    }
+
+    @DeleteMapping("/api/gift/{giftId}")
+    public ResponseEntity<Boolean> deleteGift(@PathVariable int giftId) {
+        try {
+            boolean result = giftService.deleteGift(giftId);
+            return new ResponseEntity<>(result, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+    }
+
+    @PutMapping("/api/gift")
+    public ResponseEntity<Gift> updateGift(@RequestBody Gift gift) {
+        try {
+           gift =  giftService.updateGift(gift);
+            return new ResponseEntity<>(gift, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+    }
+}
+==================================================================================================================================================
+GiftService:
+
+package com.examly.springapp.service;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.examly.springapp.model.Gift;
+import com.examly.springapp.repository.GiftRepo;
+
+@Service
+public class GiftService {
+    
+    @Autowired
+    private GiftRepo giftRepo;
+
+    public Gift addGift(Gift gift) {
+        return giftRepo.save(gift);
+    }
+    public Gift updateGift(Gift gift) {
+        return giftRepo.save(gift);
+    }
+    public boolean deleteGift(int id) {
+        giftRepo.deleteById(id);
+        return true;
+    }
+    public List<Gift> findAllGifts() {
+        return giftRepo.findAll();
+    }
+
+    public Gift findGiftById(int id) {
+        return giftRepo.findById(id).get();
+    }
+}
+==================================================================================================================================================
+UserService:
+
+package com.examly.springapp.service;
+import com.examly.springapp.configuration.*;
+import com.examly.springapp.model.User;
+import com.examly.springapp.repository.UserRepo;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
+
+@Service
+public class UserService implements UserDetailsService {
+
+    @Autowired
+    private UserRepo userRepo;
+
+    public User registerUser(User user) {
+        return userRepo.save(user);
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) {
+        User user = userRepo.findByUsername(username);
+        if (user == null)
+            throw new UsernameNotFoundException("User Not Found");
+        return new UserPrinciple(user);
+    }
+}
+===================================================================================================================================================
+
