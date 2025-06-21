@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mouseover Event Example</title>
+    <style>
+        #myBox {
+            width: 100px;
+            height: 100px;
+            background-color: lightblue;
+            border: 1px solid blue;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="myBox">
+        Hover over me!
+    </div>
+    <p id="message"></p>
+
+    <script>
+        // Get references to the HTML elements
+        const myBox = document.getElementById('myBox');
+        const messageParagraph = document.getElementById('message');
+
+        // Define the function to be executed on mouseover
+        function handleMouseOver() {
+            messageParagraph.textContent = 'Mouse is over the box!';
+            myBox.style.backgroundColor = 'lightgreen'; // Change background color
+        }
+
+        // Define the function to be executed on mouseout (optional, but often used with mouseover)
+        function handleMouseOut() {
+            messageParagraph.textContent = 'Mouse left the box.';
+            myBox.style.backgroundColor = 'lightblue'; // Reset background color
+        }
+
+        // Add the event listeners
+        myBox.addEventListener('mouseover', handleMouseOver);
+        myBox.addEventListener('mouseout', handleMouseOut);
+    </script>
+
+</body>
+</html>
