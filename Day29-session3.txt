@@ -1,0 +1,353 @@
+session3:1QS
+-------------
+class User {
+    name: string;
+    email: string;
+    password: string;
+    country: string;
+  
+    constructor(name: string, email: string, password: string, country: string) {
+      this.name = name.trim();
+      this.email = email.trim();
+      this.password = password.trim();
+      this.country = country; 
+    }
+  
+    validateData(): Promise<string> {
+      return new Promise((resolve, reject) => {
+        const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        const validCountries = ["USA", "Canada", "UK"];
+  
+        if (this.name === "") {
+          reject("Name must not be empty");
+        } else if (!emailRegex.test(this.email)) {
+          reject("Email must be a valid email address");
+        } else if (this.password.length < 8) {
+          reject("Password must be at least 8 characters long");
+        } else if (!validCountries.includes(this.country)) {
+          reject("Country must be selected from the predefined list");
+        } else {
+          resolve("Success! Registration is complete");
+        }
+      });
+    }
+  }
+  
+  function submitForm(): void { 
+    const name = (document.getElementById("name") as HTMLInputElement).value;
+    const email = (document.getElementById("email") as HTMLInputElement).value;
+    const password = (document.getElementById("password") as HTMLInputElement).value;
+    const country = (document.getElementById("country") as HTMLSelectElement).value;
+  
+    const successMsg = document.getElementById("successMessage")!;
+    const errorMsg = document.getElementById("errorMessage")!;
+  
+    successMsg.style.display = "none";
+    errorMsg.style.display = "none";
+    successMsg.textContent = "";
+    errorMsg.textContent = "";
+  
+    const user =  new User(name, email, password, country);
+  
+    user.validateData()
+      .then((message) => {
+        successMsg.textContent = message;
+        successMsg.style.display = "block";
+      })
+      .catch((error) => {
+        errorMsg.textContent = error;
+        errorMsg.style.display = "block";
+      });
+  }
+  
+  // Attach listener to the submit button click instead of form submit
+  document.getElementById("submitButton")?.addEventListener("click", (e) => {
+    e.preventDefault(); // prevent default button behavior if inside a form
+    submitForm();
+  });
+  
+
+index.html:
+-------------
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>User Registration Form</title>
+  <style>
+    #successMessage, #errorMessage {
+      margin-top: 10px;
+      font-weight: bold;
+    }
+    #successMessage { color: green; }
+    #errorMessage { color: red; }
+  </style>
+</head>
+<body>
+  <h1>User Registration Form</h1>
+  <form>
+       <label for="name">Name<strong style="color: red;">*</strong>:</label>
+    <input type="text" id="name"/><br />
+
+    <label for="email">Email<strong style="color: red;">*</strong>:</label>
+    <input type="email" id="email"/><br />
+    
+    <label for="password">Password<strong style="color: red;">*</strong>:</label>
+    <input type="password" id="password"/><br />
+    
+    <label for="country">Country<strong style="color: red;">*</strong>:</label>
+    <select id="country">
+        <option value="">Select Country</option>
+      <option value="USA">USA</option>
+      <option value="Canada">Canada</option>
+      <option value="UK">UK</option>
+    </select><br>
+    <button id="submitButton" type="submit">Submit</button>
+  </form>
+  
+  <div id="successMessage" style="display: none;"></div>
+  <div id="errorMessage" style="display: none;"></div>
+
+  <script src="./script.js"></script>
+</body>
+</html>
+
+
+
+
+session3:2Q:
+--------------
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Event Registration Form</title>
+  <style>
+    #successMessage,
+    #errorMessage {
+      margin-top: 10px;
+      font-weight: bold;
+    }
+    #successMessage {
+      color: green;
+    }
+    #errorMessage {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+    <h1>Event Registration Form</h1>
+    <form>
+         <label for="name">Name<strong style="color: red;">*</strong>:</label>
+      <input type="text" id="name"/><br />
+  
+      <label for="email">Email<strong style="color: red;">*</strong>:</label>
+      <input type="email" id="email"/><br />
+      
+      <label for="phoneNumber">Phone Number<strong style="color: red;">*</strong>:</label>
+      <input type="text" id="phoneNumber"/><br />
+      
+      <label for="event">Event<strong style="color: red;">*</strong>:</label>
+      <select id="event">
+        <option value="">Select Event</option>
+        <option value="Conference">Conference</option>
+        <option value="Workshop">Workshop</option>
+        <option value="Seminar">Seminar</option>
+      </select> <br>
+      <button id="submitButton" type="submit">Submit</button>
+    </form>
+    
+    <div id="successMessage" style="display: none;"></div>
+    <div id="errorMessage" style="display: none;"></div>
+  
+    <script src="./script.js"></script>
+  </body>
+  
+</html>
+
+
+script.ts:
+===========
+class Attendee {
+    name: string;
+    email: string;
+    phoneNumber: string;
+    event: string;
+  
+    constructor(name: string, email: string, phoneNumber: string, event: string) {
+      this.name = name.trim();
+      this.email = email.trim();
+      this.phoneNumber = phoneNumber.trim();
+      this.event = event;
+    }
+  
+    validateData(): Promise<string> {
+      return new Promise((resolve, reject) => {
+        const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        const phoneRegex = /^\d{10}$/;
+        const validEvents = ["Conference", "Workshop", "Seminar"];
+  
+        if (this.name === "") {
+          reject("Name must not be empty");
+        } else if (!emailRegex.test(this.email)) {
+          reject("Email must be a valid email address");
+        } else if (!phoneRegex.test(this.phoneNumber)) {
+          reject("Phone number must be a 10-digit number");
+        } else if (!validEvents.includes(this.event)) {
+          reject("Event must be selected from the predefined list");
+        } else {
+          resolve("Success! Registration is complete");
+        }
+      });
+    }
+  }
+  
+  function submitForm(): void {
+    const name = (document.getElementById("name") as HTMLInputElement).value;
+    const email = (document.getElementById("email") as HTMLInputElement).value;
+    const phoneNumber = (document.getElementById("phoneNumber") as HTMLInputElement).value;
+    const event = (document.getElementById("event") as HTMLSelectElement).value;
+  
+    const successMsg = document.getElementById("successMessage")!;
+    const errorMsg = document.getElementById("errorMessage")!;
+  
+    successMsg.style.display = "none";
+    errorMsg.style.display = "none";
+    successMsg.textContent = "";
+    errorMsg.textContent = "";
+  
+    const attendee = new Attendee(name, email, phoneNumber, event);
+  
+    attendee.validateData()
+      .then((message) => {
+        successMsg.textContent = message;
+        successMsg.style.display = "block";
+      })
+      .catch((error) => {
+        errorMsg.textContent = error;
+        errorMsg.style.display = "block";
+      });
+  }
+  
+  document.getElementById("submitButton")?.addEventListener("click", (e) => {
+    e.preventDefault();
+    submitForm();
+  });
+  
+
+
+
+session3:3Q:
+==============
+class Task {
+    title: string;
+    description: string;
+    priority: string;
+    dueDate: string;
+  
+    constructor(title: string, description: string, priority: string, dueDate: string) {
+      this.title = title.trim();
+      this.description = description.trim();
+      this.priority = priority;
+      this.dueDate = dueDate;
+    }
+  
+    validateData(): Promise<string> {
+      return new Promise((resolve, reject) => {
+        const validPriorities = ["High", "Medium", "Low"];
+  
+        if (this.title === "") {
+          reject("Title must not be empty.");
+        } else if (this.description === "") {
+          reject("Description must not be empty.")
+        } else if (!validPriorities.includes(this.priority)) {
+          reject("Priority must be selected from the predefined list.");
+        } else if (!this.dueDate) {
+          reject("Due date must not be empty.");
+        } else {
+          resolve("Added the task successfully.");
+        }
+      });
+    }
+  }
+  
+  function submitForm(): void {
+    const title = (document.getElementById("title") as HTMLInputElement).value;
+    const description = (document.getElementById("description") as HTMLTextAreaElement).value;
+    const priority = (document.getElementById("priority") as HTMLSelectElement).value;
+    const dueDate = (document.getElementById("dueDate") as HTMLInputElement).value;
+  
+    const successMsg = document.getElementById("successMessage")!;
+    const errorMsg = document.getElementById("errorMessage")!;
+  
+    successMsg.style.display = "none";
+    errorMsg.style.display = "none";
+  
+    const task = new Task(title, description, priority, dueDate);
+  
+    task.validateData()
+      .then((message) => {
+        successMsg.textContent = message;
+        successMsg.style.display = "block";
+      })
+      .catch((error) => {
+        errorMsg.textContent = error;
+        errorMsg.style.display = "block";
+      });
+  }
+  
+  document.getElementById("submitButton")?.addEventListener("click", (e) => {
+    e.preventDefault();
+    submitForm();
+  });
+  
+
+index.html:
+===========
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Task Management</title>
+  <style>
+    #successMessage, #errorMessage {
+      font-weight: bold;
+      margin-top: 10px;
+    }
+    #successMessage {
+      color: green;
+    }
+    #errorMessage {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <h1>Task Management</h1>
+
+  <form>
+    <label for="title">Title<strong style="color: red;">*:</strong></label>
+    <input type="text" id="title"/><br />
+    <label for="description">Description<strong style="color: red;">*:</strong></label>
+    <textarea id="description"></textarea><br />
+    <label for="priority">Priority<strong style="color: red;">*:</strong></label>
+    <select id="priority">
+      <option value="">Select Priority</option>
+      <option value="High">High</option>
+      <option value="Medium">Medium</option>
+      <option value="Low">Low</option>
+    </select><br />
+    <label for="dueDate">Due Date<strong style="color: red;">*:</strong></label>
+    <input type="date" id="dueDate" /><br />
+    <button type="submit" id="submitButton">Add Task</button>
+  </form>
+
+  <div id="successMessage" style="display: none;"></div>
+  <div id="errorMessage" style="display: none;"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
+

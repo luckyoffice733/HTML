@@ -1,0 +1,308 @@
+session1:1Q
+=============
+// index.js
+
+// Step 2: Create Student class
+class Student {
+    constructor(name, age) {
+      this.name = name;
+      this.age = age;
+      this.grades = [];
+    }
+  
+    // Step 3: Add a grade to the grades array
+    addGrade(grade) {
+      this.grades.push(grade);
+    }
+  
+    // Step 4: Calculate average grade
+    getAverageGrade() {
+      if (this.grades.length === 0) {
+        return 0;
+      }
+      let sum = this.grades.reduce((total, grade) => total + grade, 0);
+      return sum / this.grades.length;
+    }
+  }
+  
+  // Step 5: Create array of students
+  const students = [];
+  
+  // Create and add student objects
+  const student1 = new Student("Alice", 20);
+  student1.addGrade(80);
+  student1.addGrade(90);
+  student1.addGrade(85);
+  
+  const student2 = new Student("Bob", 21);
+  student2.addGrade(70);
+  student2.addGrade(75);
+  
+  const student3 = new Student("Charlie", 19);
+  student3.addGrade(88);
+  student3.addGrade(92);
+  student3.addGrade(84);
+  student3.addGrade(86);
+  
+  // Add to students array
+  students.push(student1, student2, student3);
+  
+  // Display each student's info
+  students.forEach((student) => {
+    console.log("Name: " + student.name);
+    console.log("Age: " + student.age);
+    console.log("Grades: " + student.grades.join(", "));
+    console.log("Average Grade: " + student.getAverageGrade().toFixed(2));
+    console.log("------------------------");
+  });
+  
+  // Step 6: Export the Student class
+  module.exports = Student;
+  
+
+
+Session 1:2Q:
+================
+// index.js
+
+// Step 2: Movie constructor function
+function Movie(title, director, year, genre) {
+    this.title = title;
+    this.director = director;
+    this.year = year;
+    this.genre = genre;
+    this.isPlaying = false; // Default value
+  }
+  
+  // Step 3: Add play and stop methods to the prototype
+  Movie.prototype.play = function () {
+    this.isPlaying = true;
+    return this.isPlaying;
+  };
+  
+  Movie.prototype.stop = function () {
+    this.isPlaying = false;
+    return this.isPlaying;
+  };
+  
+  // Step 4: Create and manage a list of movies
+  const movies = [];
+  
+  const movie1 = new Movie("Inception", "Christopher Nolan", 2010, "Sci-Fi");
+  const movie2 = new Movie("The Godfather", "Francis Ford Coppola", 1972, "Crime");
+  const movie3 = new Movie("Interstellar", "Christopher Nolan", 2014, "Sci-Fi");
+  
+  movies.push(movie1, movie2, movie3);
+  
+  // Display movie details and play/stop them
+  movies.forEach((movie) => {
+    console.log("Title: " + movie.title);
+    console.log("Director: " + movie.director);
+    console.log("Year: " + movie.year);
+    console.log("Genre: " + movie.genre);
+    console.log("Playing: " + movie.play()); // Play the movie
+    console.log("Stopped: " + movie.stop()); // Stop the movie
+    console.log("-------------------------");
+  });
+  
+  // Step 5: Export the Movie constructor
+  module.exports = Movie;
+  
+
+
+session1:3Q:
+==============
+// index.js
+
+// Step 1: Define the Product class
+class Product {
+  constructor(name, price, quantityInStock) {
+    this.name = name;
+    this.price = price;
+    this.quantityInStock = quantityInStock;
+  }
+
+  // a. buy(quantity): simulate purchase
+  buy(quantity) {
+    if (this.quantityInStock >= quantity) {
+      this.quantityInStock -= quantity;
+      console.log(quantity + " " + this.name + "(s) bought.");
+    } else {
+      console.log("Insufficient stock for " + this.name + ".");
+    }
+  }
+
+  // b. restock(quantity): add to stock
+  restock(quantity) {
+    this.quantityInStock += quantity;
+    console.log(this.name + " restocked by " + quantity + ".");
+  }
+}
+
+// Step 2: Create an array of Product objects
+const products = [
+  new Product("Laptop", 60000, 10),
+  new Product("Smartphone", 25000, 20),
+  new Product("Headphones", 2000, 15),
+];
+
+// Step 3: Simulate buying and restocking
+products.forEach((product) => {
+  console.log("Initial quantity of " + product.name + ": " + product.quantityInStock);
+  product.buy(5);         // simulate buying 5 units
+  product.restock(10);    // simulate restocking 10 units
+  console.log("Updated quantity of " + product.name + ": " + product.quantityInStock);
+  console.log("-----------------------------");
+});
+
+// Step 4: Export the Product class
+module.exports = Product;
+
+
+session 2:1Q:
+=============
+// index.js
+
+// Step 2: Define the Book class
+class Book {
+  constructor(title, author) {
+    this.title = title;
+    this.author = author;
+    this.isAvailable = true; // default availability status
+  }
+
+  // Step 3: Method to checkout the book
+  checkoutBook() {
+    if (this.isAvailable) {
+      this.isAvailable = false;
+      console.log(this.title + " has been checked out.");
+    } else {
+      console.log(this.title + " is already checked out.");
+    }
+  }
+
+  // Method to return the book
+  returnBook() {
+    if (!this.isAvailable) {
+      this.isAvailable = true;
+      console.log(this.title + " has been returned.");
+    } else {
+      console.log(this.title + " is already available.");
+    }
+  }
+}
+
+// Step 4: Create an array of Book objects
+const books = [
+  new Book("The Great Gatsby", "F. Scott Fitzgerald"),
+  new Book("To Kill a Mockingbird", "Harper Lee"),
+  new Book("1984", "George Orwell"),
+];
+
+// Step 5: Simulate checking out and returning books
+books[0].checkoutBook(); // Checkout "The Great Gatsby"
+books[1].checkoutBook(); // Checkout "To Kill a Mockingbird"
+books[1].returnBook();   // Return "To Kill a Mockingbird"
+
+// Step 6: Display list of books with availability status
+console.log("\nCurrent Book List:");
+books.forEach((book) => {
+  console.log(
+    "Title: " + book.title +
+    ", Author: " + book.author +
+    ", Available: " + (book.isAvailable ? "Yes" : "No")
+  );
+});
+
+// Step 7: Export the Book class
+module.exports = Book;
+
+
+
+session 2:2Q:
+===============
+// index.js
+
+// Step 2: Define the Movie class
+class Movie {
+    constructor(title, director, year, genre) {
+      this.title = title;
+      this.director = director;
+      this.year = year;
+      this.genre = genre;
+    }
+  
+    // Step 3: Method to return formatted movie info
+    getMovieInfo() {
+      return (
+        "Title: " + this.title +
+        ", Director: " + this.director +
+        ", Year: " + this.year +
+        ", Genre: " + this.genre
+      );
+    }
+  }
+  
+  // Step 4: Create an array of Movie objects
+  const movies = [
+    new Movie("Inception", "Christopher Nolan", 2010, "Sci-Fi"),
+    new Movie("The Godfather", "Francis Ford Coppola", 1972, "Crime"),
+    new Movie("The Dark Knight", "Christopher Nolan", 2008, "Action"),
+    new Movie("Parasite", "Bong Joon-ho", 2019, "Thriller")
+  ];
+  
+  // Step 5: Display info for each movie
+  console.log("Movie List:");
+  movies.forEach((movie) => {
+    console.log(movie.getMovieInfo());
+  });
+  
+  // Step 6: Export the Movie class
+  module.exports = Movie;
+  
+
+session 2:3Q:
+==============
+// index.js
+
+// Step 2: Define the Car class
+class Car {
+    constructor(name, model, year, specs) {
+      this.name = name;
+      this.model = model;
+      this.year = year;
+      this.specs = specs;
+    }
+  
+    // Step 3: Method to return formatted car info
+    getCarInfo() {
+      return (
+        "Name: " + this.name +
+        ", Model: " + this.model +
+        ", Year: " + this.year +
+        ", Specs: " + this.specs
+      );
+    }
+  }
+  
+  // Step 4: Create an array of Car objects
+  const cars = [
+    new Car("Toyota", "Corolla", 2020, "Petrol, Manual"),
+    new Car("Tesla", "Model S", 2022, "Electric, Autopilot"),
+    new Car("Ford", "Mustang", 2019, "Petrol, Automatic"),
+    new Car("BMW", "X5", 2021, "Diesel, AWD")
+  ];
+  
+  // Step 5: Display info for each car
+  console.log("Car List:");
+  cars.forEach((car) => {
+    console.log(car.getCarInfo());
+  });
+  
+  // Step 6: Export the Car class
+  module.exports = Car;
+  
+
+
+
+
