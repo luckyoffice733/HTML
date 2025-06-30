@@ -1,0 +1,461 @@
+1)Task Tracker App
+
+task-input  component.ts
+================
+
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+
+@Component({
+  selector: 'app-task-input',
+  templateUrl: './task-input.component.html',
+  styleUrls: ['./task-input.component.css']
+})
+export class TaskInputComponent implements OnInit {
+  taskInput: string;
+  @Output() taskAdded: EventEmitter<string> = new EventEmitter();
+  constructor() { }
+  ngOnInit(): void { }
+  addTask() {
+    if (this.taskInput)
+      this.taskAdded.emit(this.taskInput);
+    this.taskInput = '';
+  }
+}
+
+=========================================================
+task-input   html
+
+<h1>Task Input</h1>
+<input type="text" [(ngModel)]="taskInput">
+<button (click)="addTask()">Add Task</button>
+
+
+====================================================
+task-input css
+
+.task-input-container {
+    background-color: #fff;
+    padding: 20px;
+    margin: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  input {
+    padding: 10px;
+    margin-right: 10px;
+    width: 300px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  input:focus {
+    border-color: #007bff;
+    outline: none;
+  }
+  ============================================
+task-list component.ts
+
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+@Component({
+  selector: 'app-task-list',
+  templateUrl: './task-list.component.html',
+  styleUrls: ['./task-list.component.css']
+})
+export class TaskListComponent implements OnInit {
+  @Input() tasks: string[];
+  @Output() taskDeleted: EventEmitter<number> = new EventEmitter();
+  constructor() { }
+  ngOnInit(): void { }
+  deleteTask(index: number) {
+    this.taskDeleted.emit(index);
+  }
+}
+===============================================
+task-list html
+
+<h1>Task List</h1>
+<ul *ngFor="let t of tasks;index as i">
+    <li>{{t}}</li>
+    <button (click)="deleteTask(i)">Delete</button>
+</ul>
+====================================================
+task-list css
+
+.task-list-container {
+    background-color: #fff;
+    padding: 20px;
+    margin: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  li {
+    background-color: #f9f9f9;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  li:hover {
+    background-color: #f1f1f1;
+  }
+  
+  button {
+    background-color: #ff4c4c;
+  }
+  
+  button:hover {
+    background-color: #e60000;
+  }
+  =======================================================
+app module.ts
+
+import { BrowserModule } from '@angular/platform-browser';
+import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { AppRoutingModule } from './app-routing.module';
+import { AppComponent } from './app.component';
+import { TaskInputComponent } from './task-input/task-input.component';
+import { TaskListComponent } from './task-list/task-list.component';
+
+@NgModule({
+  declarations: [
+    AppComponent,
+    TaskInputComponent,
+    TaskListComponent
+  ],
+  imports: [
+    FormsModule,
+    BrowserModule,
+    AppRoutingModule
+  ],
+  providers: [],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+=====================================================
+app component.ts
+
+import { Component } from '@angular/core';
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+  title = 'angularapp';
+  tasks:string[]=[];
+  addTask(task:string){
+    this.tasks.push(task);
+  }
+  deleteTask(index:number){
+    this.tasks.splice(index,1);
+  }
+}
+==============================================
+app component.html
+
+<h1>Task Tracker</h1>
+<app-task-input (taskAdded)="addTask($event)"></app-task-input>
+<app-task-list (taskDeleted)="deleteTask($event)" [tasks]="tasks" ></app-task-list>
+===============================================================
+app componenet.css
+
+.app-container {
+    text-align: center;
+    margin-top: 50px;
+  }
+  ==============================================================================
+
+
+2)Stationery Management System
+
+product-details component.ts:
+
+import { Component, Input, OnInit } from '@angular/core';
+interface Product {
+  id: number;
+  name: string;
+  description: string;
+  price: number;
+  imageUrl: string;
+}
+@Component({
+  selector: 'app-product-details',
+  templateUrl: './product-details.component.html',
+  styleUrls: ['./product-details.component.css']
+})
+export class ProductDetailsComponent implements OnInit {
+  @Input() selectedProduct!: Product;
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+
+}
+==================================================
+product-details html:
+
+<h1>Product Details</h1>
+<div class="product-details-box" *ngIf="selectedProduct">
+  <img [src]="selectedProduct.imageUrl" alt="{{ selectedProduct.name }}" />
+  <h2>{{ selectedProduct.name }}</h2>
+  <p>{{ selectedProduct.description }}</p>
+  <p>Price: ${{ selectedProduct.price }}</p>
+</div>
+===================================================
+product-list component.ts:
+
+import { Component, OnInit, Output,EventEmitter } from '@angular/core';
+
+
+interface Product {
+  id: number;
+  name: string;
+  description: string;
+  price: number;
+  imageUrl: string;
+}
+
+@Component({
+  selector: 'app-product-list',
+  templateUrl: './product-list.component.html',
+  styleUrls: ['./product-list.component.css']
+})
+export class ProductListComponent implements OnInit {
+  products: Product[] = [
+    { id: 1, name: 'Pencil', description: 'A pencil is an object that you write or draw with. It consists of a thin piece of wood with a rod of a black or coloured substance through the middle', price: 10.99, imageUrl: 'assets/pencil.jpg' },
+    { id: 2, name: 'Scale', description: 'A scale is a set of levels or numbers which are used in a particular system of measuring things or are used when comparing things', price: 19.99, imageUrl: 'assets/scale.jpg' },
+    { id: 3, name: 'Eraser', description: 'An eraser, piece of rubber or other material used to rub out marks made by ink, pencil, or chalk. The modern eraser is usually a mixture of an abrasive such as fine pumice, a rubbery matrix such as synthetic rubber or vinyl, and other ingredients.', price: 29.99, imageUrl: 'assets/eraser.jpg' }
+  ];
+
+  @Output() productSelected = new EventEmitter<Product>();
+
+  viewDetails(product: Product) {
+    this.productSelected.emit(product);
+  }
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+
+}
+=============================================================
+product-list html:
+
+<h1>Product List</h1>
+<div *ngFor="let product of products" class="product-item">
+  <img [src]="product.imageUrl" alt="{{ product.name }}" />
+  <h3>{{ product.name }}</h3>
+  <button (click)="viewDetails(product)">View Details</button>
+</div>
+====================================================
+app module.ts
+
+import { BrowserModule } from '@angular/platform-browser';
+import { NgModule } from '@angular/core';
+
+import { AppRoutingModule } from './app-routing.module';
+import { AppComponent } from './app.component';
+import { ProductListComponent } from './product-list/product-list.component';
+import { ProductDetailsComponent } from './product-details/product-details.component';
+
+@NgModule({
+  declarations: [
+    AppComponent,
+    ProductListComponent,
+    ProductDetailsComponent
+  ],
+  imports: [
+    BrowserModule,
+    AppRoutingModule
+  ],
+  providers: [],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+===================================================================
+app component.ts:
+
+import { Component } from '@angular/core';
+interface Product {
+  id: number;
+  name: string;
+  description: string;
+  price: number;
+  imageUrl: string;
+}
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+  title = 'angularapp';
+  selectedProduct!: Product;
+
+  onProductSelected(product: Product) {
+    this.selectedProduct = product;
+  }
+}
+=====================================================
+app component.html:
+
+<h1>Stationery Management System</h1>
+<div style="display: flex;">
+  <div style="flex: 1; padding-right: 20px;">
+    <app-product-list (productSelected)="onProductSelected($event)"></app-product-list>
+  </div>
+  <div style="flex: 1;">
+    <app-product-details [selectedProduct]="selectedProduct"></app-product-details>
+  </div>
+</div>
+========================================================
+
+3)Color Picker And Color Viewer
+
+color-picker component.ts:
+
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+@Component({
+  selector: 'app-color-picker',
+  templateUrl: './color-picker.component.html',
+  styleUrls: ['./color-picker.component.css']
+})
+export class ColorPickerComponent implements OnInit {
+  selectedColor: string = '#ff0000'; // Initial color
+  selectedMsg: string= 'Color received from the ColorPicker component'
+
+  @Output() colorSelected = new EventEmitter<string>();
+
+
+  onColorChange() {
+    this.colorSelected.emit(this.selectedColor); // Emit the selected color
+
+  }
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+
+}
+=======================================================
+
+color-picker html:
+
+<h2>Pick a color</h2>
+<input type="color" [(ngModel)]="selectedColor" (change)="onColorChange()" style="height: 50px; border-radius: 7px;">
+<h1>Selected Color:</h1>
+<div class="selected-color-box" [style.backgroundColor]="selectedColor">
+</div>
+===================================
+color-picker css:
+
+.selected-color-box {
+    height: 100px;
+    width: 100px;
+    margin-top: 10px;
+    border: 1px solid #fff;
+  }
+============================================
+color-viewer.component.ts
+
+import { Component, Input, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-color-viewer',
+  templateUrl: './color-viewer.component.html',
+  styleUrls: ['./color-viewer.component.css']
+})
+export class ColorViewerComponent implements OnInit {
+  @Input() receivedColor: string = '#ff0000';
+
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+
+}
+===================================================
+color-viewer html:
+
+<h1>Color Viewer</h1>
+<div class="color-box" [style.backgroundColor]="receivedColor">
+Color received from the ColorPicker component
+</div>
+================================================================
+color-viewer css:
+
+.color-box {
+    height: 200px;
+    width: 200px;
+    border: 1px solid #fff;
+    margin-top: 10px;
+  }
+============================================================
+app.module.ts:
+
+import { BrowserModule } from '@angular/platform-browser';
+import { NgModule } from '@angular/core';
+
+import { AppRoutingModule } from './app-routing.module';
+import { AppComponent } from './app.component';
+import { ColorPickerComponent } from './color-picker/color-picker.component';
+import { ColorViewerComponent } from './color-viewer/color-viewer.component';
+import { FormsModule } from '@angular/forms';
+
+@NgModule({
+  declarations: [
+    AppComponent,
+    ColorPickerComponent,
+    ColorViewerComponent
+  ],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    FormsModule
+  ],
+  providers: [],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+====================================================================
+app.component.ts:
+
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+  title = 'angularapp';
+  selectedColor: string = '#ff0000';
+
+  onColorSelected(color: string) {
+    this.selectedColor = color;
+  }
+}
+==================================================================================
+app.component.html:
+
+<h1>Color Picker</h1>
+<app-color-picker (colorSelected)="onColorSelected($event)"></app-color-picker>
+<app-color-viewer [receivedColor]="selectedColor"></app-color-viewer>
+========================================================================
+
+
+
+
+
