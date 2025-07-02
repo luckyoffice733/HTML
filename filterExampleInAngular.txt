@@ -1,0 +1,103 @@
+1. Sample db.json
+{
+  "users": [
+    { "id": 1, "name": "Alice", "role": "Admin" },
+    { "id": 2, "name": "Bob", "role": "User" },
+    { "id": 3, "name": "Charlie", "role": "Guest" },
+    { "id": 4, "name": "Diana", "role": "Admin" },
+    { "id": 5, "name": "Eve", "role": "User" }
+  ]
+}
+Run json-server:
+================
+json-server --watch db.json
+It will run on: http://localhost:3000/users
+
+user.service.ts 
+===============
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+
+@Injectable({ providedIn: 'root' })
+export class UserService {
+  private apiUrl = 'http://localhost:3000/users';
+
+  constructor(private http: HttpClient) {}
+
+  getUsers(): Observable<any[]> {
+    return this.http.get<any[]>(this.apiUrl);
+  }
+}
+
+filter-form.component.ts
+
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { UserService } from './user.service';
+
+@Component({
+  selector: 'app-filter-form',
+  templateUrl: './filter-form.component.html'
+})
+export class FilterFormComponent implements OnInit {
+  filterForm: FormGroup;
+  roles = ['All', 'Admin', 'User', 'Guest'];
+  users = [];
+  filteredUsers = [];
+
+  constructor(private fb: FormBuilder, private userService: UserService) {}
+
+  ngOnInit(): void {
+    // Create form with default value "All"
+    this.filterForm = this.fb.group({ role: ['All'] });
+
+    // Load users from json-server
+    this.userService.getUsers().subscribe(data => {
+      this.users = data;
+      this.filteredUsers = data; // Show all users initially
+    });
+
+    // Listen to dropdown changes
+    this.filterForm.get('role').valueChanges.subscribe(role => {
+      this.filterUsers(role);
+    });
+  }
+
+  filterUsers(role: string) {
+    this.filteredUsers = role === 'All'
+      ? this.users
+      : this.users.filter(user => user.role === role);
+  }
+}
+
+filter-form.component.html
+===========================
+
+<form [formGroup]="filterForm">
+  <label>Select Role:</label>
+  <select formControlName="role">
+    <option *ngFor="let role of roles" [value]="role">{{ role }}</option>
+  </select>
+</form>
+
+<hr>
+
+<h3>Filtered Users</h3>
+<ul>
+  <li *ngFor="let user of filteredUsers">
+    {{ user.name }} - {{ user.role }}
+  </li>
+</ul>
+
+
+=====================================================================
+import { ReactiveFormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
+
+@NgModule({
+  imports: [
+    ReactiveFormsModule,
+    HttpClientModule
+  ]
+})
