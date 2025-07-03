@@ -1,0 +1,46 @@
+//control level validations
+
+export function productNameValidator(control:AbstractControl):ValidationErrors | null {
+   const pn  = control.value;
+   //write a regular expression productname doesnt accept special character
+  const regex=/^[a-zA-Z\s]+$/
+   
+   return  regex.test(pn)? null: {nameValidator:true};
+
+}
+
+//FormGroup level validation -> newProduct->name
+// export function productNameValidator():ValidatorFn {
+//   return (control:AbstractControl):ValidationErrors|null =>{
+//   const pn  = control.value;//user
+//   //write a regular expression productname doesnt accept special character
+//  const regex=/^[a-zA-Z\s]+$/
+  
+//   return  regex.test(pn)? null: {nameValidator:true};
+
+// }
+// }
+
+
+//formGroup- stock field validating
+export function minimunStockValidator(miniStock:number):ValidatorFn{
+
+  return (control:AbstractControl):ValidationErrors|null =>{
+   
+    const uESt=control.value;
+  
+    return uESt>miniStock?null:{miniStock:true};
+  }
+
+}
+
+//Field /control level
+
+export function miniStockValidation(control:AbstractControl):ValidationErrors|null{
+  
+  const miniStock=19
+
+  const uESt=control.value;
+
+  return uESt>miniStock?null:{miniStock:true};
+}

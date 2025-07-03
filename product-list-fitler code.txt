@@ -1,0 +1,95 @@
+
+<form [formGroup]="filterForm">
+    <select formControlName="stock">
+        <option value='0'>All</option>
+        <option value='10'>10</option>
+        <option value='25'>25</option>
+    </select>
+
+</form>
+
+
+<table border="2px">
+ <tbody>
+
+    <tr *ngFor="let product of== filterdProcut ">
+    <td>
+        {{product.name}}
+    </td>
+    <td>
+     {{product.price}}
+    </td>
+    <td>
+        {{product.stock}}
+    </td>
+    <td>
+        <button (click)="deleteProduct(product.id)">Delete</button>
+    </td>
+    </tr>
+
+
+ </tbody>
+</table>
+=====================
+import { Component, OnInit } from '@angular/core';
+import { ProductService } from '../services/product.service';
+import { Product } from '../model/product.model';
+import { FormBuilder, FormGroup } from '@angular/forms';
+
+@Component({
+  selector: 'app-product-list',
+  templateUrl: './product-list.component.html',
+  styleUrls: ['./product-list.component.css']
+})
+export class ProductListComponent implements OnInit {
+   products:Product[]=[];
+   filterdProcut:Product[]=[];
+
+   filterForm:FormGroup;
+
+  constructor(private productService:ProductService,private fb:FormBuilder) { 
+    this.filterForm=this.fb.group({
+       stock:[0]
+    })
+  }
+
+  ngOnInit(): void {
+    this.loadProducts()
+
+     this.filterForm.get('stock').valueChanges.subscribe(data =>{
+        this.applyFilter(data);
+     })
+  }
+
+  applyFilter(d){
+    let result;
+    if(d===0){
+     result=this.products;
+    }else{
+      result=this.products.filter(p => p.stock <=d)
+    }
+   this.filterdProcut=result;
+  }
+
+
+  loadProducts(){  //getProducts                //    subscribe this observable =>getProducts():Observable<Product[]>
+                                                         //subscrible(success,error) => request processed success-> the data in success                                                // if request not processed it will throw error  -> errro
+      this.productService.getProducts().subscribe((data)=>{
+        this.products=data;
+        this.filterdProcut=data;
+      });   
+  }
+
+   //delete the record if reord exist based on id if not exist
+   //then send the error/print in the console.
+
+   deleteProduct(id:number){
+    this.productService.deleteProduct(id).subscribe(()=>{
+      this.loadProducts();//once delete get the all records
+    },(error)=>{
+      console.log('Record not Exist: ',error);
+    })
+   }
+
+
+}
