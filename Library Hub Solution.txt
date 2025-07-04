@@ -1,0 +1,260 @@
+Library Hub Solution:
+=====================
+db.json
+-------
+{
+  "books": [
+    {
+      "id": 1,
+      "title": "To Kill a Mockingbird",
+      "author": "Harper Lee",
+      "genre": "Fiction",
+      "price": 9.99,
+      "description": "Classic novel",
+      "formats": ["Hardcover", "Paperback"],
+      "quantity": 5
+    }
+  ]
+}
+}
+
+Model: src/app/models/book.model.ts
+===================================
+export interface Book {
+  id?: number;
+  title: string;
+  author: string;
+  genre: string;
+  price: number;
+  description: string;
+  formats: string[];
+  quantity: number;
+}
+
+Service: src/app/services/book.service.ts
+=========================================
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { Book } from '../models/book.model';
+
+@Injectable({ providedIn: 'root' })
+export class BookService {
+  private baseUrl = 'http://localhost:8080';
+
+  constructor(private http: HttpClient) {}
+
+  createBook(book: Book): Observable<Book> {
+    console.log('Creating Book', book);
+    return this.http.post<Book>(`${this.baseUrl}/books`, book);
+  }
+
+  getBooks(): Observable<Book[]> {
+    return this.http.get<Book[]>(`${this.baseUrl}/books`);
+  }
+
+  deleteBook(id: number): Observable<void> {
+    console.log('Deleting Book with ID', id);
+    return this.http.delete<void>(`${this.baseUrl}/books/${id}`);
+  }
+}
+
+Add Book Form Component
+=======================
+src/app/components/add-book-form/add-book-form.component.html
+
+
+<h2>Add Book</h2>
+<form #f="ngForm" (ngSubmit)="saveBook(f)">
+  <input name="title" [(ngModel)]="newBook.title" required placeholder="Title">
+  <div *ngIf="f.submitted && !newBook.title">Title is required</div>
+
+  <input name="author" [(ngModel)]="newBook.author" required placeholder="Author">
+  <div *ngIf="f.submitted && !newBook.author">Author is required</div>
+
+  <input name="genre" [(ngModel)]="newBook.genre" required placeholder="Genre">
+  <div *ngIf="f.submitted && !newBook.genre">Genre is required</div>
+
+  <input type="number" name="price" [(ngModel)]="newBook.price" required min="0" placeholder="Price">
+  <div *ngIf="f.submitted && newBook.price < 0">Price is required</div>
+
+  <textarea name="description" [(ngModel)]="newBook.description" required placeholder="Description"></textarea>
+  <div *ngIf="f.submitted && !newBook.description">Description is required</div>
+
+  <div>
+    <label *ngFor="let fmt of formatOptions">
+      <input type="checkbox" [value]="fmt" (change)="updateFormats(fmt, $event)">{{fmt}}
+    </label>
+  </div>
+  <div *ngIf="f.submitted && newBook.formats.length === 0">At least one format is required</div>
+
+  <input type="number" name="quantity" [(ngModel)]="newBook.quantity" required min="0" placeholder="Quantity">
+  <div *ngIf="f.submitted && newBook.quantity < 0">Quantity is required</div>
+
+  <button type="submit">Add Book</button>
+</form>
+<div *ngIf="errorMessage">{{errorMessage}}</div>
+
+src/app/components/add-book-form/add-book-form.component.ts
+============================================================
+import { Component, OnInit } from '@angular/core';
+import { NgForm } from '@angular/forms';
+import { Router } from '@angular/router';
+import { BookService } from '../../services/book.service';
+import { Book } from '../../models/book.model';
+
+@Component({
+  selector: 'app-add-book-form',
+  templateUrl: './add-book-form.component.html'
+})
+export class AddBookFormComponent implements OnInit {
+  newBook!: Book;
+  formatOptions = ['Hardcover', 'Paperback', 'eBook', 'Audiobook'];
+  errorMessage = '';
+
+  constructor(private svc: BookService, private router: Router) {}
+
+  ngOnInit() {
+    this.newBook = this.initializeBook();
+  }
+
+  initializeBook(): Book {
+    return { title: '', author: '', genre: '', price: 0, description: '', formats: [], quantity: 0 };
+  }
+
+  updateFormats(fmt: string, ev: Event) {
+    const checked = (ev.target as HTMLInputElement).checked;
+    if (checked) this.newBook.formats.push(fmt);
+    else this.newBook.formats = this.newBook.formats.filter(f => f !== fmt);
+  }
+
+  saveBook(f: NgForm) {
+    if (f.invalid || this.newBook.formats.length === 0) return;
+    this.svc.createBook(this.newBook).subscribe({
+      next: () => {
+        f.resetForm(this.initializeBook());
+        this.router.navigate(['/viewBooks']);
+      },
+      error: () => this.errorMessage = 'Failed to add book'
+    });
+  }
+}
+
+HTML: src/app/components/book-list/book-list.component.html
+============================================================
+<h2>Library Collection</h2>
+<div class="filter-container">
+  <label>Filter by Genre:</label>
+  <select [(ngModel)]="selectedGenre" (change)="applyFilter()">
+    <option value="">All</option>
+    <option *ngFor="let g of genreOptions" [value]="g">{{g}}</option>
+  </select>
+</div>
+
+<table *ngIf="filteredBooks.length">
+  <tr><th>Title</th><th>Author</th><th>Genre</th><th>Price</th><th>Quantity</th><th>Formats</th><th>Actions</th></tr>
+  <tr *ngFor="let b of filteredBooks">
+    <td>{{b.title}}</td><td>{{b.author}}</td><td>{{b.genre}}</td><td>{{b.price | currency}}</td>
+    <td>{{b.quantity}}</td><td>{{b.formats.join(', ')}}</td>
+    <td><button id="delete" class="delete-button" (click)="deleteBook(b.id!)">Delete</button></td>
+  </tr>
+</table>
+<div *ngIf="!filteredBooks.length" class="no-items-message">No books found.</div>
+
+
+src/app/components/book-list/book-list.component.ts
+====================================================
+import { Component, OnInit } from '@angular/core';
+import { BookService } from '../../services/book.service';
+import { Book } from '../../models/book.model';
+
+@Component({
+  selector: 'app-book-list',
+  templateUrl: './book-list.component.html'
+})
+export class BookListComponent implements OnInit {
+  books: Book[] = [];
+  filteredBooks: Book[] = [];
+  selectedGenre = '';
+  genreOptions: string[] = [];
+
+  constructor(private svc: BookService) {}
+
+  ngOnInit() {
+    this.loadBooks();
+  }
+
+  loadBooks() {
+    this.svc.getBooks().subscribe(data => {
+      this.books = data;
+      this.genreOptions = Array.from(new Set(data.map(b => b.genre)));
+      this.applyFilter();
+    });
+  }
+
+  applyFilter() {
+    this.filteredBooks = this.selectedGenre
+      ? this.books.filter(b => b.genre === this.selectedGenre)
+      : [...this.books];
+  }
+
+  deleteBook(id: number) {
+    this.svc.deleteBook(id).subscribe({
+      next: () => this.loadBooks(),
+      error: err => console.error('Delete failed', err)
+    });
+  }
+}
+
+App Component & Routing
+src/app/app.component.html
+===========================
+<h1>LibraryHub</h1>
+<nav>
+  <a routerLink="/addBook">Add Book</a> |
+  <a routerLink="/viewBooks">View Books</a>
+</nav>
+<router-outlet></router-outlet>
+
+src/app/app-routing.module.ts
+=============================
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { AddBookFormComponent } from './components/add-book-form/add-book-form.component';
+import { BookListComponent } from './components/book-list/book-list.component';
+
+const routes: Routes = [
+  { path: '', redirectTo: '/viewBooks', pathMatch: 'full' },
+  { path: 'addBook', component: AddBookFormComponent },
+  { path: 'viewBooks', component: BookListComponent },
+];
+
+@NgModule({
+  imports: [RouterModule.forRoot(routes)],
+  exports: [RouterModule],
+})
+export class AppRoutingModule {}
+=================================
+Dependencies: Ensure FormsModule and HttpClientModule are imported in app.module.ts.
+
+Formatting Updates: You can add sorting or price search easily by extending BookListComponent.
+
+Run JSON Server: npx json-server --watch db.json --port 8080
+
+
+
+
+pplyFilter() {
+  this.filteredBooks = this.books
+    .filter(book =>
+      (!this.selectedGenre || book.genre === this.selectedGenre) &&
+      (this.maxPrice == null || book.price <= this.maxPrice)
+    )
+    .sort((a, b) => 
+      this.priceSortOrder === 'asc'
+        ? a.price - b.price
+        : b.price - a.price
+    );
+}
+Every time selectedGenre, maxPrice, or priceSortOrder changes, calling applyFilter() updates the displayed list accordingly.
+
