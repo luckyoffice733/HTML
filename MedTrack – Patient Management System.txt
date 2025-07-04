@@ -1,0 +1,472 @@
+MedTrack – Patient Management System
+
+The MedTrack Patient Management System enables efficient tracking and management of patient records in healthcare facilities. It allows users to add, view, and delete patient data while keeping records of demographics, medical conditions, vitals, and admission details.
+
+JSON Server Setup:
+
+The backend for this project is configured using JSON Server, providing a solution for managing the database and serving API endpoints.
+
+Accessing API:
+Start the JSON Server using the command:
+
+npx json-server --watch db.json --port 8080
+
+Then, access the API endpoints via the following URL:
+
+https://ide-<your-workspace-id>.project.examly.io/proxy/8080
+
+This serves as the base URL for all API requests.
+
+API Endpoints:
+The following endpoints are available for managing patient records:
+
+GET /patients → Retrieve all patients.
+
+POST /patients → Add a new patient.
+
+DELETE /patients/{id} → Delete a specific patient by ID.
+
+Frontend Implementation
+Generate components, models, and services as shown below:
+
+Folder Structure
+
+src/
+├── app/
+│   ├── models/
+│   │   └── patient.model.ts
+│   ├── services/
+│   │   └── patient.service.ts
+│   ├── components/
+│   │   ├── add-patient-form/
+│   │   │   └── add-patient-form.component.ts/html/css
+│   │   ├── patient-list/
+│   │   │   └── patient-list.component.ts/html/css
+│   └── app-routing.module.ts
+
+Model: Patient Interface
+
+patient.model.ts (inside src/app/models)
+
+Properties to implement:
+
+export interface Vitals {
+  temperature: number;
+  bloodPressure: string;
+  heartRate: number;
+}
+
+export interface Patient {
+  id?: number;
+  fullName: string;
+  age: number;
+  gender: string;
+  condition: string;
+  admissionDate: string;
+  vitals: Vitals;
+}
+
+Service: PatientService
+patient.service.ts (inside src/app/services)
+
+Declare a private baseUrl property and set it to the API base URL.
+
+Use HttpClient to interact with the backend API.
+
+Methods to implement:
+
+createPatient(patient: Patient): Observable<Patient>
+POST: Sends new patient data to baseUrl/patients
+Logs "Creating Patient" with the patient details.
+
+getPatients(): Observable<Patient[]>
+GET: Retrieves all patient records from baseUrl/patients
+
+deletePatient(id: number): Observable<void>
+DELETE: Removes a patient record from baseUrl/patients/{id}
+
+Logs "Deleting Patient with ID" and the id.
+
+Components Implementation:
+AddPatientFormComponent
+Frontend Add URL:https://8081-<your-id>.project.examly.io/addNewPatient
+
+Heading (<h2>): Displays "Add Patient".
+
+Reactive Form Fields with validation:
+
+Full Name: input[type="text"], formControlName="fullName", id="fullName" → Error: "Full Name is required"
+
+Age: input[type="number"], formControlName="age", min="0" → Error: "Age is required"
+
+Gender: select, formControlName="gender" → Options: Male, Female, Other
+
+Condition: input[type="text"], formControlName="condition" → Error: "Condition is required"
+
+Admission Date: input[type="date"], formControlName="admissionDate" → Error: "Admission Date is required"
+
+Vitals Group (formGroupName="vitals"):
+
+Temperature: formControlName="temperature" → Error: "Temperature is required"
+
+Blood Pressure: formControlName="bloodPressure" → Error: "Blood Pressure is required"
+
+Heart Rate: formControlName="heartRate" → Error: "Heart Rate is required"
+
+Buttons:
+"Add Patient" (calls savePatient() on form submission).
+
+Form must not be disabled even with errors.
+
+Validation errors should display on click of the button.
+
+PatientListComponent
+Frontend View URL:https://8081-<your-id>.project.examly.io/viewPatients
+
+Features:
+Heading (<h2>): "Patient Records"
+
+Filter by Condition:
+
+A select dropdown (id="filterCondition")
+
+Default: "All" → value=""
+
+Dynamic options from conditionOptions
+
+Calls applyFilter() on change
+
+Table Display:
+Uses <table class="patient-table"> with columns:
+
+Full Name
+
+Age
+
+Gender
+
+Condition
+
+Vitals (Temp / BP / HR)
+
+Admission Date
+
+Actions (Delete)
+
+Each row has a Delete button (id="delete" and class="delete-button")
+
+No Data:
+If no patient matches, show a message with class "no-items-message".
+
+AppComponent – app.component.html
+Features:
+Application title inside <h1> as: MedTrack
+
+Navigation menu:
+
+"Add New Patient" → Navigates to /addNewPatient
+
+"View Patients" → Navigates to /viewPatients
+
+Uses <router-outlet> to render route components.
+
+
+Solution:
+----------
+db.json:
+--------
+{
+  "patients": [
+    {
+      "id": 1,
+      "name": "John Doe",
+      "age": 45,
+      "gender": "Male",
+      "condition": "Diabetes",
+      "medication": "Metformin",
+      "vitals": {
+        "bloodPressure": "130/85",
+        "temperature": 98.6
+      }
+    },
+    {
+      "id": 2,
+      "name": "Jane Smith",
+      "age": 62,
+      "gender": "Female",
+      "condition": "Hypertension",
+      "medication": "Lisinopril",
+      "vitals": {
+        "bloodPressure": "145/90",
+        "temperature": 98.4
+      }
+    },
+    {
+      "id": 3,
+      "name": "Carlos Martinez",
+      "age": 29,
+      "gender": "Male",
+      "condition": "Asthma",
+      "medication": "Albuterol",
+      "vitals": {
+        "bloodPressure": "120/75",
+        "temperature": 98.7
+      }
+    },
+    {
+      "id": 4,
+      "name": "Aisha Khan",
+      "age": 34,
+      "gender": "Female",
+      "condition": "Hypothyroidism",
+      "medication": "Levothyroxine",
+      "vitals": {
+        "bloodPressure": "118/76",
+        "temperature": 98.2
+      }
+    },
+    {
+      "id": 5,
+      "name": "Robert Lee",
+      "age": 78,
+      "gender": "Male",
+      "condition": "Chronic Obstructive Pulmonary Disease",
+      "medication": "Tiotropium",
+      "vitals": {
+        "bloodPressure": "135/88",
+        "temperature": 98.9
+      }
+    }
+  ]
+}
+
+====================
+1. patient.model.ts (src/app/models)
+====================
+export interface Vitals {
+  bloodPressure: string;
+  temperature: number;
+}
+
+export interface Patient {
+  id?: number;
+  name: string;
+  age: number;
+  gender: string;
+  condition: string;
+  medication: string;
+  vitals: Vitals;
+}
+
+
+====================
+2. patient.service.ts (src/app/services)
+====================
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { Patient } from '../models/patient.model';
+
+@Injectable({ providedIn: 'root' })
+export class PatientService {
+  private baseUrl = 'https://ide.<machinename>.project.examly.io/proxy/8080';
+
+  constructor(private http: HttpClient) {}
+
+  getPatients(): Observable<Patient[]> {
+    return this.http.get<Patient[]>(`${this.baseUrl}/patients`);
+  }
+
+  createPatient(patient: Patient): Observable<Patient> {
+    return this.http.post<Patient>(`${this.baseUrl}/patients`, patient);
+  }
+
+  deletePatient(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/patients/${id}`);
+  }
+}
+
+
+====================
+3. add-patient-form.component.ts
+====================
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { PatientService } from '../services/patient.service';
+import { Router } from '@angular/router';
+
+@Component({
+  selector: 'app-add-patient-form',
+  templateUrl: './add-patient-form.component.html',
+})
+export class AddPatientFormComponent implements OnInit {
+  patientForm: FormGroup;
+  errorMessage = '';
+
+  constructor(private fb: FormBuilder, private patientService: PatientService, private router: Router) {
+    this.patientForm = this.fb.group({
+      name: ['', Validators.required],
+      age: ['', [Validators.required, Validators.min(1)]],
+      gender: ['', Validators.required],
+      condition: ['', Validators.required],
+      medication: ['', Validators.required],
+      vitals: this.fb.group({
+        bloodPressure: ['', Validators.required],
+        temperature: ['', [Validators.required, Validators.pattern(/^\d+(\.\d{1,2})?$/)]],
+      }),
+    });
+  }
+
+  ngOnInit(): void {}
+
+  savePatient(): void {
+    if (this.patientForm.valid) {
+      this.patientService.createPatient(this.patientForm.value).subscribe(
+        () => this.router.navigate(['/viewPatients']),
+        () => this.errorMessage = 'Failed to add patient record.'
+      );
+    } else {
+      this.errorMessage = 'Please fill all required fields correctly.';
+    }
+  }
+}
+
+
+====================
+4. add-patient-form.component.html
+====================
+<h2>Add Patient</h2>
+<form [formGroup]="patientForm" (ngSubmit)="savePatient()">
+  <label>Name: <input formControlName="name" /></label>
+  <div *ngIf="patientForm.get('name')?.touched && patientForm.get('name')?.invalid">Name is required.</div>
+
+  <label>Age: <input type="number" formControlName="age" /></label>
+  <div *ngIf="patientForm.get('age')?.touched && patientForm.get('age')?.invalid">Age is required and must be > 0.</div>
+
+  <label>Gender: <input formControlName="gender" /></label>
+  <div *ngIf="patientForm.get('gender')?.touched && patientForm.get('gender')?.invalid">Gender is required.</div>
+
+  <label>Condition: <input formControlName="condition" /></label>
+  <div *ngIf="patientForm.get('condition')?.touched && patientForm.get('condition')?.invalid">Condition is required.</div>
+
+  <label>Medication: <input formControlName="medication" /></label>
+  <div *ngIf="patientForm.get('medication')?.touched && patientForm.get('medication')?.invalid">Medication is required.</div>
+
+  <div formGroupName="vitals">
+    <label>Blood Pressure: <input formControlName="bloodPressure" /></label>
+    <div *ngIf="patientForm.get('vitals.bloodPressure')?.touched && patientForm.get('vitals.bloodPressure')?.invalid">Required.</div>
+
+    <label>Temperature: <input formControlName="temperature" /></label>
+    <div *ngIf="patientForm.get('vitals.temperature')?.touched && patientForm.get('vitals.temperature')?.invalid">Invalid temperature.</div>
+  </div>
+
+  <button type="submit">Add Patient</button>
+  <div *ngIf="errorMessage">{{ errorMessage }}</div>
+</form>
+
+
+====================
+5. patient-list.component.ts
+====================
+import { Component, OnInit } from '@angular/core';
+import { PatientService } from '../services/patient.service';
+import { Patient } from '../models/patient.model';
+
+@Component({
+  selector: 'app-patient-list',
+  templateUrl: './patient-list.component.html',
+})
+export class PatientListComponent implements OnInit {
+  patients: Patient[] = [];
+  filteredPatients: Patient[] = [];
+  selectedCondition = '';
+  conditionOptions = ['Diabetes', 'Hypertension', 'Asthma'];
+
+  constructor(private patientService: PatientService) {}
+
+  ngOnInit(): void {
+    this.loadPatients();
+  }
+
+  loadPatients(): void {
+    this.patientService.getPatients().subscribe((data) => {
+      this.patients = data;
+      this.applyFilter();
+    });
+  }
+
+  applyFilter(): void {
+    if (!this.selectedCondition) {
+      this.filteredPatients = this.patients;
+    } else {
+      this.filteredPatients = this.patients.filter(p => p.condition === this.selectedCondition);
+    }
+  }
+
+  deletePatient(id: number): void {
+    this.patientService.deletePatient(id).subscribe(() => this.loadPatients());
+  }
+}
+
+
+====================
+6. patient-list.component.html
+====================
+<h2>Patient List</h2>
+<div>
+  <label>Filter by Condition:
+    <select [(ngModel)]="selectedCondition" (change)="applyFilter()">
+      <option value="">All</option>
+      <option *ngFor="let option of conditionOptions" [value]="option">{{ option }}</option>
+    </select>
+  </label>
+</div>
+
+<table *ngIf="filteredPatients.length">
+  <thead>
+    <tr>
+      <th>Name</th><th>Age</th><th>Gender</th><th>Condition</th><th>Medication</th><th>Blood Pressure</th><th>Temp</th><th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let p of filteredPatients">
+      <td>{{ p.name }}</td><td>{{ p.age }}</td><td>{{ p.gender }}</td><td>{{ p.condition }}</td>
+      <td>{{ p.medication }}</td><td>{{ p.vitals.bloodPressure }}</td><td>{{ p.vitals.temperature }}</td>
+      <td><button (click)="deletePatient(p.id!)">Delete</button></td>
+    </tr>
+  </tbody>
+</table>
+<div *ngIf="!filteredPatients.length">No patient records found.</div>
+
+
+====================
+7. app-routing.module.ts
+====================
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { AddPatientFormComponent } from './components/add-patient-form/add-patient-form.component';
+import { PatientListComponent } from './components/patient-list/patient-list.component';
+
+const routes: Routes = [
+  { path: '', redirectTo: '/viewPatients', pathMatch: 'full' },
+  { path: 'addNewPatient', component: AddPatientFormComponent },
+  { path: 'viewPatients', component: PatientListComponent },
+];
+
+@NgModule({
+  imports: [RouterModule.forRoot(routes)],
+  exports: [RouterModule],
+})
+export class AppRoutingModule {}
+
+
+====================
+8. app.component.html
+====================
+<h1>MedTrack</h1>
+<nav>
+  <a routerLink="/addNewPatient">Add New Patient</a> |
+  <a routerLink="/viewPatients">View Patients</a>
+</nav>
+<router-outlet></router-outlet>
+
