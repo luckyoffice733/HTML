@@ -1,0 +1,412 @@
+Use Case Name: EduManage - Online Course Management System: Includes Sort and Filter
+====================================================================================
+
+The EduManage system is built to manage online courses for an e-learning platform. It allows administrators to add, view, filter, sort, and delete courses. It helps in maintaining course details, instructor assignments, difficulty levels, and availability status.
+
+Core Features:
+
+Add New Course (Reactive Form with validations)
+
+View All Courses (Table with Filter and Sort options)
+
+Delete Course
+
+Filter by:
+
+Category (e.g., Programming, Design)
+
+Level (Beginner, Intermediate, Advanced)
+
+Sort by:
+
+Course Title (A-Z or Z-A)
+
+Duration (Shortest to Longest)
+
+Routes:
+Path		Component		Description
+/addNewCourse	AddCourseComponent	Add new course details
+/viewCourses	CourseListComponent	View, filter, and sort courses
+
+
+Sample Course Model:
+
+export interface Course {
+  id: number;
+  title: string;
+  instructor: string;
+  category: string; // e.g., 'Programming', 'Design', etc.
+  duration: number; // In hours
+  level: string;    // 'Beginner' | 'Intermediate' | 'Advanced'
+  available: boolean;
+}
+
+Sample Records (db.json):
+
+{
+  "courses": [
+    {
+      "id": 1,
+      "title": "Angular Basics",
+      "instructor": "Alice Johnson",
+      "category": "Programming",
+      "duration": 10,
+      "level": "Beginner",
+      "available": true
+    },
+    {
+      "id": 2,
+      "title": "UI/UX Design Principles",
+      "instructor": "Bob Smith",
+      "category": "Design",
+      "duration": 8,
+      "level": "Intermediate",
+      "available": true
+    },
+    {
+      "id": 3,
+      "title": "React Advanced",
+      "instructor": "Claire Lee",
+      "category": "Programming",
+      "duration": 15,
+      "level": "Advanced",
+      "available": false
+    },
+    {
+      "id": 4,
+      "title": "Photoshop Essentials",
+      "instructor": "Dan Brown",
+      "category": "Design",
+      "duration": 6,
+      "level": "Beginner",
+      "available": true
+    },
+    {
+      "id": 5,
+      "title": "Data Structures in C++",
+      "instructor": "Eva Green",
+      "category": "Programming",
+      "duration": 12,
+      "level": "Intermediate",
+      "available": true
+    }
+  ]
+}
+
+Filter and Sort Options in CourseListComponent:
+Filter Form (Reactive):
+
+this.filterForm = this.fb.group({
+  category: ['All'],
+  level: ['All']
+});
+
+Sort Options (Dropdown):
+this.sortOptions = ['Title A-Z', 'Title Z-A', 'Duration ↑', 'Duration ↓'];
+
+Technologies Used:
+Angular
+Reactive Forms
+JSON Server (Mock Backend)
+
+Validations in AddCourseComponent:
+==================================
+
+Title: Required, Min Length 3
+
+Instructor: Required
+
+Duration: Required, Min 1 hour
+
+Level: Required
+
+Category: Required
+
+Available: Checkbox
+
+Solution:
+==========
+// ========== app.module.ts ==========
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
+import { RouterModule, Routes } from '@angular/router';
+
+import { AppComponent } from './app.component';
+import { AddCourseComponent } from './add-course/add-course.component';
+import { CourseListComponent } from './course-list/course-list.component';
+import { CourseService } from './services/course.service';
+
+const routes: Routes = [
+  { path: 'addNewCourse', component: AddCourseComponent },
+  { path: 'viewCourses', component: CourseListComponent },
+  { path: '', redirectTo: 'viewCourses', pathMatch: 'full' }
+];
+
+@NgModule({
+  declarations: [AppComponent, AddCourseComponent, CourseListComponent],
+  imports: [BrowserModule, FormsModule, ReactiveFormsModule, HttpClientModule, RouterModule.forRoot(routes)],
+  providers: [CourseService],
+  bootstrap: [AppComponent]
+})
+export class AppModule {}
+
+
+// ========== models/course.model.ts ==========
+export interface Course {
+  id?: number;
+  title: string;
+  instructor: string;
+  category: string;
+  duration: number;
+  level: string;
+  available: boolean;
+}
+
+
+// ========== services/course.service.ts ==========
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { Course } from '../models/course.model';
+
+@Injectable()
+export class CourseService {
+  private baseUrl = 'http://localhost:3000/courses';
+
+  constructor(private http: HttpClient) {}
+
+  getCourses(): Observable<Course[]> {
+    return this.http.get<Course[]>(this.baseUrl);
+  }
+
+  addCourse(course: Course): Observable<Course> {
+    return this.http.post<Course>(this.baseUrl, course);
+  }
+
+  deleteCourse(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/${id}`);
+  }
+}
+
+
+// ========== add-course/add-course.component.ts ==========
+import { Component } from '@angular/core';
+import { FormBuilder, Validators, FormGroup } from '@angular/forms';
+import { Router } from '@angular/router';
+import { CourseService } from '../services/course.service';
+
+@Component({
+  selector: 'app-add-course',
+  templateUrl: './add-course.component.html'
+})
+export class AddCourseComponent {
+  courseForm: FormGroup;
+
+  categories = ['Programming', 'Design'];
+  levels = ['Beginner', 'Intermediate', 'Advanced'];
+
+  constructor(private fb: FormBuilder, private service: CourseService, private router: Router) {
+    this.courseForm = this.fb.group({
+      title: ['', [Validators.required, Validators.minLength(3)]],
+      instructor: ['', Validators.required],
+      category: ['', Validators.required],
+      duration: [1, [Validators.required, Validators.min(1)]],
+      level: ['', Validators.required],
+      available: [false]
+    });
+  }
+
+  onSubmit() {
+    if (this.courseForm.valid) {
+      this.service.addCourse(this.courseForm.value).subscribe(() => this.router.navigate(['/viewCourses']));
+    }
+  }
+}
+
+
+// ========== add-course/add-course.component.html ==========
+<h2>Add New Course</h2>
+<form [formGroup]="courseForm" (ngSubmit)="onSubmit()">
+  <label>Title: <input formControlName="title" /></label><br />
+  <label>Instructor: <input formControlName="instructor" /></label><br />
+  <label>Category:
+    <select formControlName="category">
+      <option value="">Select</option>
+      <option *ngFor="let c of categories" [value]="c">{{ c }}</option>
+    </select>
+  </label><br />
+  <label>Duration (hours): <input type="number" formControlName="duration" /></label><br />
+  <label>Level:
+    <select formControlName="level">
+      <option value="">Select</option>
+      <option *ngFor="let l of levels" [value]="l">{{ l }}</option>
+    </select>
+  </label><br />
+  <label>Available: <input type="checkbox" formControlName="available" /></label><br />
+  <button type="submit">Add Course</button>
+</form>
+
+
+// ========== course-list/course-list.component.ts ==========
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { Course } from '../models/course.model';
+import { CourseService } from '../services/course.service';
+
+@Component({
+  selector: 'app-course-list',
+  templateUrl: './course-list.component.html'
+})
+export class CourseListComponent implements OnInit {
+  courses: Course[] = [];
+  filteredCourses: Course[] = [];
+  sortBy = '';
+  filterForm: FormGroup;
+
+  categories = ['All', 'Programming', 'Design'];
+  levels = ['All', 'Beginner', 'Intermediate', 'Advanced'];
+  sortOptions = ['Title A-Z', 'Title Z-A', 'Duration ↑', 'Duration ↓'];
+
+  constructor(private service: CourseService, private fb: FormBuilder) {
+    this.filterForm = this.fb.group({
+      category: ['All'],
+      level: ['All']
+    });
+  }
+
+  ngOnInit(): void {
+    this.service.getCourses().subscribe(data => {
+      this.courses = data;
+      this.applyFilters();
+    });
+
+    this.filterForm.valueChanges.subscribe(() => this.applyFilters());
+  }
+
+  applyFilters() {
+    let result = [...this.courses];
+    const { category, level } = this.filterForm.value;
+    if (category !== 'All') result = result.filter(c => c.category === category);
+    if (level !== 'All') result = result.filter(c => c.level === level);
+    this.filteredCourses = this.sortCourses(result);
+  }
+
+  sortCourses(courses: Course[]): Course[] {
+    switch (this.sortBy) {
+      case 'Title A-Z': return [...courses].sort((a, b) => a.title.localeCompare(b.title));
+      case 'Title Z-A': return [...courses].sort((a, b) => b.title.localeCompare(a.title));
+      case 'Duration ↑': return [...courses].sort((a, b) => a.duration - b.duration);
+      case 'Duration ↓': return [...courses].sort((a, b) => b.duration - a.duration);
+      default: return courses;
+    }
+  }
+
+  onSortChange(event: any) {
+    this.sortBy = event.target.value;
+    this.filteredCourses = this.sortCourses(this.filteredCourses);
+  }
+
+  deleteCourse(id: number) {
+    this.service.deleteCourse(id).subscribe(() => this.ngOnInit());
+  }
+}
+
+
+// ========== course-list/course-list.component.html ==========
+<h2>Course List</h2>
+<form [formGroup]="filterForm">
+  <label>Category:
+    <select formControlName="category">
+      <option *ngFor="let c of categories" [value]="c">{{ c }}</option>
+    </select>
+  </label>
+  <label>Level:
+    <select formControlName="level">
+      <option *ngFor="let l of levels" [value]="l">{{ l }}</option>
+    </select>
+  </label>
+</form>
+<label>Sort By:
+  <select (change)="onSortChange($event)">
+    <option *ngFor="let opt of sortOptions" [value]="opt">{{ opt }}</option>
+  </select>
+</label>
+<table border="1">
+  <thead>
+    <tr>
+      <th>Title</th>
+      <th>Instructor</th>
+      <th>Category</th>
+      <th>Duration</th>
+      <th>Level</th>
+      <th>Available</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let course of filteredCourses">
+      <td>{{ course.title }}</td>
+      <td>{{ course.instructor }}</td>
+      <td>{{ course.category }}</td>
+      <td>{{ course.duration }} hrs</td>
+      <td>{{ course.level }}</td>
+      <td>{{ course.available ? 'Yes' : 'No' }}</td>
+      <td><button (click)="deleteCourse(course.id)">Delete</button></td>
+    </tr>
+  </tbody>
+</table>
+
+
+// ========== db.json ==========
+{
+  "courses": [
+    {
+      "id": 1,
+      "title": "Angular Basics",
+      "instructor": "Alice Johnson",
+      "category": "Programming",
+      "duration": 10,
+      "level": "Beginner",
+      "available": true
+    },
+    {
+      "id": 2,
+      "title": "UI/UX Design Principles",
+      "instructor": "Bob Smith",
+      "category": "Design",
+      "duration": 8,
+      "level": "Intermediate",
+      "available": true
+    },
+    {
+      "id": 3,
+      "title": "React Advanced",
+      "instructor": "Claire Lee",
+      "category": "Programming",
+      "duration": 15,
+      "level": "Advanced",
+      "available": false
+    },
+    {
+      "id": 4,
+      "title": "Photoshop Essentials",
+      "instructor": "Dan Brown",
+      "category": "Design",
+      "duration": 6,
+      "level": "Beginner",
+      "available": true
+    },
+    {
+      "id": 5,
+      "title": "Data Structures in C++",
+      "instructor": "Eva Green",
+      "category": "Programming",
+      "duration": 12,
+      "level": "Intermediate",
+      "available": true
+    }
+  ]
+}
+
