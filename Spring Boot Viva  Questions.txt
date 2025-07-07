@@ -1,0 +1,64 @@
+
+What is springBoot?
+IOC container -> Application Context and Bean Factory?
+Dependency Injection? ->setter and constructor injection?
+what is autowired? -> byType,byName and constructor?
+
+scopes in SPringBoot ? -> default scope is singleton -> other scopes prototype,session ..etc
+
+what is ORM?
+what is the use of entity class? Followed by annotations(@Entity,@Table,@Id,@Column...etc?
+Primay Key Auto Generation? in entity class using @Id field using @GeneratedValue(Stragety and it types
+AUTO,IDENTITY and SEQUENCE,TABLE.
+
+in application properties :-
+what is the use of show-sql,hbm2ddl.auto=true? search for it and other properties also?
+
+What is use of springDataJpa?
+
+what JpaRepository->PagingAndSortingRepository->CrudRepository->Repository--> check the hierarchy?
+default  methods : findById,deleteById,findAll,save (if already exist it wil do update and if not it will do
+insert).
+
+what is Gobal exceptions?->search for the @RestControllerAdvice/@Controller Advice ->@ExceptionHandler?
+
+
+what is restaPI?
+Http methods and status codes
+Post,put,delete,get-> @GetMapping(fetch operation),@PutMapping(update operation),@DeleteMapping(delete operation) and @PostMapping(insert/add/)
+
+and StereoType Anntations like-> @Component,@Service,@Repository and @RestController (@Controller +@RespondBody) .
+@RequestMapping
+@RequestBody
+@PathVariable -> {}
+@RequestParam -> path?key=value&key=value
+@ComponentScan
+
+how to test restapi endpoint urls ?
+we use in our platform ThunderClient for Api testing.
+
+
+at last
+-------
+What is security?
+what is authorization and authentication?(difference) with example?
+
+how can we achieve springboot security ?
+
+1)in Inmemroy database
+2)using physical databae
+
+3)Jwt token? what is jwt token? token contain how many parts? what are claims?
+ what is the use of UserSerivce implements UserDetailsService class.
+ what is the use of UserPrincipal class and Actual class to generate the token -> is JwtUtils and
+ JwtAuthentication extends OncePerUserRequest? and SecurityConfig?
+Note: search for the @PreAuthorize,@hasRole @hasAnyRole and permit all 
+search more about in www.javainuse.com.
+
+
+
+
+
+
+
+

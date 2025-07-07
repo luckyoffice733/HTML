@@ -1,0 +1,50 @@
+Oops:
+class
+object
+inheritance
+abstraction and interface
+polymorphism(overloading and overridden)-> @Overriden annotation
+
+java program execution start from which method?
+
+difference between interface and abstract class?
+difference between class and abstract class?
+
+what is Enumeration in Java?
+
+different type of variable declararions? static/instance/local and final
+
+how to call static methods and variables?
+how to call instance methods and variables?
+
+what is constructor?
+what is use of this keyword?-> with in the class
+what is the use of superkeyword? -> with in the child class
+
+what is String? and String constant Pool? -> discuss more about immutable
+and StringBuilder and StringBuffer difference and mutable? and synchronized methods
+
+what is exception handling?
+
+unchecked and checked exceptions? 
+
+how to create UserDefined exception?
+
+throw and throws keyword
+
+Collections:
+------------
+List -> ArrayList and LinkedList 
+Set  ->HashSet ,LinkedHashSet and TreeSet
+Map -> HashMap, LinkedHashMap and TreeMap
+
+Note:
+-----
+check for the collections classes differences in 
+insertion/random order/ascending order
+duplicaties allowed or not allowed 
+
+custom sorting-> how to work with comparable and Comparator interface.
+
+ 
+

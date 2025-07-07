@@ -1,0 +1,49 @@
+what is angular?
+what is SPA?
+what is bootstrapping in angular?
+
+what is binding in angular? 
+interpolation  ->{{}}
+property binding ->[]
+two databinding -> [(ngModel)]
+event binding -> ()
+
+events-> (input)->(check)
+
+Directives in angular-> Different types of Directives --search it and have a glance
+
+How to share the data in parent to child component and child to parent
+1)@Input Decorator
+2)@Output Decorator
+3)@ViewChild   -> and Native Dom Manipulation -> ElementRef class.
+
+
+what is pipes? built in pipes are date,uppercase,lowercase,titlecase,currency,percentge,number
+                json,Asynce ....etc
+
+How to create custom pipe?  Class Implements PipeTransform interface and implement the code in transform method.
+
+what is routing in angular?
+
+Dependency Injection :-> we create the dependent object using Constructor.like---router,ActivatedRoute and
+                        Service class object
+
+what is service? :- to share the common data and business functionality across multiple components
+                      we will use service class.
+
+what are the forms in angular? Template Driven Forms and Reactive Forms
+
+what is the use of HttpClient and HttpClientModule
+
+what is the use of Observables and how to subscribe it.
+
+what are the guards? focus on CanActive
+
+what  is interceptors in angular?
+
+
+
+
+
+
+
