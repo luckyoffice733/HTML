@@ -47,4 +47,18 @@ duplicaties allowed or not allowed
 custom sorting-> how to work with comparable and Comparator interface.
 
  
+java8 Features:
+===============
+what is lamda expression?
+what is function Interface?  
+default method and static methods in interface(implementatio method)?
+MethodReference :: in java8
+OptionalClass in java8
+Streams in java8(map,filter,reduce,count...)
+......
+
+
+
+
+
 
