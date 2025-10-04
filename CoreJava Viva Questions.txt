@@ -1,6 +1,7 @@
 Oops:
 class
 object
+encapsulation
 inheritance
 abstraction and interface
 polymorphism(overloading and overridden)-> @Overriden annotation
@@ -56,6 +57,7 @@ MethodReference :: in java8
 OptionalClass in java8
 Streams in java8(map,filter,reduce,count...)
 ......
+
 
 
 
